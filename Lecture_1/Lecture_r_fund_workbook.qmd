@@ -1,0 +1,248 @@
+---
+title: "R fundamentals workbook"
+author: "Horacio Gomez-Acevedo"
+format: html
+bibliography: mainref.bib
+editor: visual
+---
+
+## An introduction to R
+
+For this introduction we will follow closely the book from @maindonald with some technical details from @chambers
+
+### The console
+
+The command line prompt (\>) is waiting to receive commands or expressions for R to *evaluate* immediately after the keyboard key *Enter* is pressed. The response of R is to evaluate and prints out the result of the evaluation, but in some cases opens a new window with the printout of this process. For instance,
+
+```{r}
+#| echo: true
+1+3 # a simple sum
+# an actual function sum(1,3) is evaluated by R
+```
+
+The printout of \[1\] represents that the output consists of only one element (technically of one *object*). Anything after the character \# is considered to be a comment and will not be evaluated nor ignored.
+
+In terms of the interaction with this *notebook*, we can choose to suppress the print out of the following chunk, and only the output is produced.
+
+```{r}
+#| echo: false
+1 +3
+# In this case nothing is print out from this chunk except the result
+```
+
+### Simple data entry
+
+Let's consider a modified table from @andersonmay (the last two columns are not part of the original data and the last column contains made up numbers)
+
+```{r}
+#| echo: false
+place<-c("Cirencester, Enngland", "England and Wales","Kansas, USA", "Ontario, Canada","Willesden, England", "Ghana", "Eastern Nigeria")
+timeperiod<-c("1947-1950", "1950-1968","1918-1921","1912-1913","1912-1913","1960-1968","1960-1968")
+r0<-c("11-14","16-18","5-6","11-12","11-12","14-15","16-17")
+faker0<-c(12.2,17.9,5.5,11.5,11.2,14.8,16.1)
+duration<-c(3,18,3,1,1,8,8)
+measles.df<-cbind(place,timeperiod,r0,duration,faker0)
+colnames(measles.df)<-c("Location","Time period","R0","Duration (years)","Fake R0")
+knitr::kable(measles.df,caption = "Historical Estimations of R0 for measles")
+```
+
+We can manually insert the data as follows
+
+```{r}
+faker0<-c(12.2,17.9,5.5,11.5,11.2,14.8,16.1)
+duration<-c(3,18,3,1,1,8,8)
+plot(faker0 ~duration, pch=16)
+```
+
+Some explanations are in order:
+
+-   The symbol "\<-" is an assignment operator. It means that whatever is defined in the right hand side is assigned to the left hand side. It seems pedantic to use "\<-" instead of "=", but object manipulation in R is different than other computer programs. My suggestion is to use "\<-".
+
+-   The objects *duration* and *faker0* represent "vectors" that are concatenated.
+
+-   The function *plot* will do exactly that we want.
+
+-   The notation inside the function *plot* (i.e., "faker0 \~ duration") is another special type of object referred to as *formula*.
+
+-   The option *pch* referst to the plot character that in this case is just a simple black dot.
+
+This is not our finest representation of a graph, but it shows R functionality.
+
+### The concept of a data frame
+
+Generally speaking, we assume that we have things that can be observed or measured and we call those *variables* (or *covariates*), and also we have a meaningful way to repeat these observations of those variables and report them. In computer sciences, the process of placing data in a consistent and meaningful way is delegated to a *data frame*.
+
+Thus, a data frame provides a framework in which collected data from spreadsheets or databases can be placed in a consistent manner to gain data insights using statistical methodologies.
+
+In R, a data frame object (called nor surprisingly *data.frame*) is a named list, with elements of the list representing variables. Thus, each element of the list should represent the same set of observations.
+
+> A data frame object in R can be tought as a two-way array with columns representing variables.
+
+## A quick overview of R (interactively)
+
+This section we will follow the commands presented in @maindonaldbooklet booklet starting on Chapter 2 section 2. You can check the previous section, the book is very well written.
+
+First, we start defining character vectors based on the table 2.1
+
+```{r}
+volume <- c(351 , 955 , 662 , 1203 , 557, 460)
+weight <- c(250 , 840 , 550 , 1360 , 640, 420)
+```
+
+Next, we put a character vector
+
+```{r}
+description <- c("Aird 's Guide to Sydney ",
+"Moon 's Australia handbook ",
+" Explore Australia Road Atlas",
+" Australian Motoring Guide",
+" Penguin Touring Atlas", " Canberra - The Guide")
+```
+
+> Note. By design, R is optimized to work with vectors. The term *vectorizing* contrasts with the use of loops commonly used in other computer programs (e.g., python).
+
+```{r}
+ls(pattern = "on$")
+```
+
+We will access specific elements of a vector by specifying their location
+
+```{r}
+volume[2]
+```
+
+> Note. Unlike other programs, vector positions in R start from 1.
+
+This is a rather odd-looking expression
+
+```{r}
+weight/volume
+```
+
+What R is doing behind scenes is applying a *vectorized* division. The book has even the application of a function to a vector. Once again, it applies the function to each element of the vector!
+
+```{r}
+round(x=weight/volume,digits=3)
+```
+
+We have done a simple plot before, let's explore a bit more.
+
+```{r}
+plot(volume , weight , pch =16, cex =1.5)
+```
+
+Another improvement
+
+```{r}
+plot( weight ~ volume , pch =16 , cex =1.5 ,
+xlab=" Volume ( cubic mm)", ylab=" Weight (g)")
+```
+
+What about the following change
+
+```{r}
+plot( weight ~ volume , pch =16 , cex =1.5 ,
+xlab=" Volume ( cubic mm)", ylab=" Weight (g)")
+identify ( weight ~ volume , labels = description )
+```
+
+Let's introduce now *ggplot2*, but before doing that we must keep in mind what type of arguments are required <https://ggplot2.tidyverse.org/reference/ggplot.html>
+
+The first thing we noticed is that *data* should be passed as a *data.frame* object.
+
+```{r}
+simple.df<-cbind(volume,weight)
+colnames(simple.df)
+is.data.frame(simple.df)
+```
+
+It looks strange that something that *looks* like a data frame is not the right type of object. We will fix this by forcing (*coercing*) that data structure into a data frame
+
+```{r}
+simple.df<-as.data.frame(simple.df)
+```
+
+The next chunk will make the plot
+
+```{r}
+library(ggplot2)
+ggplot(data=simple.df,mapping = aes(x=volume,y=weight))+geom_point()
+```
+
+Alternatively, we can put it as **tibbles** using *tidyr* package. You can think of a tibble as a generalization of a data frame in R.
+
+```{r}
+library(tidyr)
+simple.tibble<-tibble(volume,weight)
+ggplot(data=simple.tibble,mapping = aes(x=volume,y=weight))+geom_point()
+```
+
+## More on data frames
+
+Let's explore more on data frames using the book example
+
+```{r}
+travelbooks <- data.frame (
+thickness = c(1.3 , 3.9 , 1.2 , 2, 0.6 , 1.5),
+width = c(11.3 , 13.1 , 20, 21.1 , 25.8 , 13.1),
+height = c(23.9 , 18.7 , 27.6 , 28.5 , 36, 23.4),
+weight = weight , # Use values entered earlier
+volume = volume , # Use values entered earlier
+type = c(" Guide ", " Guide ", " Roadmaps ", " Roadmaps ",
+" Roadmaps ", "Guide"),
+row.names = description
+)
+## Remove objects that are not now needed.
+rm(volume , weight , description )
+```
+
+As a list of vectors, we will have some flexibility for accessing individual *cells*, rows, columns. However, it takes some time to get familiar with conventions for *slicing* the data according to our needs.
+
+-   Accessing specific row
+
+```{r}
+travelbooks[5,]
+```
+
+-   Accessing specific column (by name)
+
+```{r}
+travelbooks[,"volume"]
+```
+
+The conventional to access specific column has two different looking expressions
+
+```{r}
+travelbooks[["width"]]
+```
+
+And,
+
+```{r}
+travelbooks$width
+```
+
+There are more options, such a selecting specific rows based on a condition.
+
+```{r}
+travelbooks[travelbooks$height>30,]
+```
+
+## Input data from a file (part 1)
+
+We will use the package [DAAG](https://cran.r-project.org/web/packages/DAAG/index.html)
+
+```{r}
+library(DAAG)
+datafile("travelbooks")
+```
+
+If you check the file is similar to our previous data frame, and it writes out in our project directory.
+
+```{r}
+my.travel.books<-read.table(file="travelbooks.txt",header = TRUE,row.names = 1)
+```
+
+# In class exercise
+
+I have placed a small data set called Duke Students GPA in the class folder from [Kaggle](https://www.kaggle.com/datasets/joebeachcapital/duke-students-gpa)
