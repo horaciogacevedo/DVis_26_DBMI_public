@@ -1,0 +1,265 @@
+---
+title: "Introduction to ggplot2"
+author: "Horacio Gomez-Acevedo"
+institute: "University of Arkansas for Medical Sciences"
+format: html
+bibliography: ../mainref.bib
+editor: visual
+---
+
+## What is ggplot2?
+
+[ggplot2](https://ggplot2.tidyverse.org/) is an R package for producing statistical and data graphics. *ggplot2* has its own grammar based on the **Grammar of Graphics** and is composed of independent components that can interact by themselves and produce very impressive plots.
+
+The installation is typical in R.
+
+```{r install, eval=FALSE}
+install.packages("tidyverse")
+```
+
+## Grammar of Graphics
+
+In 2005, Leland Wilkinson published a book entitled *The Grammar of Graphics* @grammargraph in which he aimed to answer the question: **what is a statistical graphic?**
+
+Build upon the layered grammar of graphics, Hadley Wickham ports these concepts into R and published @ggplot2book in which provides the following definition
+
+> A statistical graphic is a mapping from data to some aesthetic attributes of geometric objects.
+
+-   The plot may also contain statistical transformations of the data
+-   Faceting can be used to focus in different subsets of the data
+-   Thus, a graph consists of a combination of the previous components.
+
+## Code
+
+This is a typical example of ggplot2 in action
+
+```{r,fig.width=10,fig.height=5}
+library(ggplot2)
+ggplot(mpg, aes(displ, hwy, colour = class)) + 
+  geom_point()
+```
+
+## Building of a plot
+
+To create the *plot* object, we use the function **ggplot()**. It has two arguments:
+
+-   data
+-   aesthetic **mapping**
+
+```{r}
+library(ggplot2)
+#p<-ggplot(diamonds, aes(carat, price, colour=cut))
+```
+
+Why we don't see anything? It is because it cannot be displayed unless it has a **layer**
+
+A layer combines data, aesthetic mapping, a geom (geometric object), a stat (statistical transformation), and a position adjustment.
+
+> Despite that @ggplot2book labels some of these parts as optional, recent versions of ggplot2 make it mandatory to have at least the *geom*, *stat* and *position* specified.
+
+```{r}
+p<-ggplot(diamonds, aes(x=carat))
+p<-p+layer(geom="bar",
+           stat="bin",
+           position = position_identity()
+)
+p
+```
+
+Behind the scenes, the functions *ggplot()* and *qplot()* creates a plot object and add layers that are defined. Thus, it is normal in ggplot2 to see the '+' as a way to add a specific layer.
+
+A much simpler way to create layers is by using a geom\_ function.
+
+```{r}
+q<-ggplot(diamonds, aes(x=carat))
+q+geom_histogram()
+```
+
+## Ggplot main parameters
+
+-   Data. The data option must be filled with a *data frame*.
+-   Aesthetic mappings. The *aes* function describes the way that variables in the data are mapped to graphical objects in the plot.
+
+For instance
+
+```{r, eval=FALSE}
+aes(x=heigh, y=weight, colour=age)
+```
+
+The *colour=age* refers to a factor that will contain such information.
+
+-   Geometric objects or *geoms* perform the actual rendering of the layer and control the type of plot.
+
+## Ggplot optional parameters
+
+-   Statistical transformation or *stat* normally modify the data. Typically it summarizes the data.\
+    For example the *stat_bin* statistic used for histograms produces the following variables
+    -   count, the number of observation in each bin
+    -   density, the density of observations in each bin
+    -   x, the center of the bin
+-   Position. This parameter allow us to perform minor tweaks to the position elements within a layer.
+
+## Examples
+
+Let's consider the data coming out from the *Duke Students GPA* data set named *gpa.csv*
+
+```{r}
+h.data<-read.csv(file = "../Datasets/gpa.csv",header = T,sep = ",")
+```
+
+The variables in this data set are:
+
+-   gpa
+-   studyweek. The number of study hours per week
+-   sleepnight. The number of sleep hours per night
+-   out. The nights going out per week.
+-   gender
+
+### Basic EDA
+
+Let's get an idea of the distribution of the variable gpa.
+
+```{r}
+pgpa<- ggplot(data=h.data,aes(x=gpa))
+pgpa + geom_density(fill="pink", alpha=(alpha=0.3))
+```
+
+Let's investigate if the distribution changes based on gender.
+
+```{r}
+f.students<-h.data[h.data$gender=="female",]
+m.students<-h.data[h.data$gender!="female",]
+```
+
+We already see that the sample sizes are different: males `r dim(m.students)[1]` and females `r dim(f.students)[1]`
+
+```{r}
+pgpa.all<- ggplot(data=h.data,aes(x=gpa,fill=gender,colour=gender))
+pgpa.all + geom_density(alpha=0.3)
+```
+
+Let's check for possible outliers
+
+```{r}
+pbp<-ggplot(data=h.data,aes(gender,gpa))
+pbp+geom_boxplot(fill="purple",colour="#c51b8a",alpha=0.2,outlier.color = "blue",outlier.shape = 1,outlier.alpha = 1)
+```
+
+## Geoms
+
+Geometric objects, or **geom** for short, perform the actual rendering of the layer, control the type of plot that is requested.
+
+Each *geom* has a set of aesthetics that it understands, and a set that are required for drawing.
+
+Every *geom* has a default statistic, and every statistic a default geom.
+
+## Stats
+
+A statistical transformation, or **stat** for short, transform the data, typically summarizing it in some manner.
+
+A *stat* takes a data set as input and returns a data set as output, and so a stat can add new variables to the original data set.
+
+```{r}
+library(ggplot2)
+d<-ggplot(data=diamonds,aes(carat))+xlim(0,3)
+d+stat_bin(aes(ymax=after_stat(count)),bindwidth=0.1,geom="area")
+```
+
+```{r}
+d+stat_bin(aes(size=after_stat(density)), geom="point",position="identity" )
+```
+
+## Scales
+
+Often times we need to make transformations in our data. Here are two mechanisms by which we can make that happen.
+
+```{r}
+p<-ggplot(data=diamonds,aes(log10(carat),log10(price)))
+p+geom_point()
+```
+
+or
+
+```{r}
+p<-ggplot(data=diamonds,aes(carat,price))
+p+geom_point()+scale_x_log10()+scale_y_log10()
+```
+
+## Color
+
+There is a more thorough description of color description in this website <https://www.handprint.com/HP/WCL/color7.html> .
+
+We will use color gradients and those come in three flavors:
+
+-   *scale_color_gradient()* and *scale_fill_gradient()* give a two-color gradient low to high.
+
+-   *scale_color_gradient2()* is a three color gradient, low medium and high.
+
+-   *scale_color_gradientn()* is a custom color that requires a vector of colors as argument.
+
+We will create a 2d density estimate of the *faithful* data set.
+
+```{r}
+# we will create the data frame that is required
+fd2<-with(faithful,MASS::kde2d(eruptions,waiting, h=c(1,10),n=50))
+df<-with(fd2,cbind(expand.grid(x,y),as.vector(z)))
+names(df)<-c("eruptions","waiting","density")
+erupt<-ggplot(df,aes(waiting, eruptions, fill=density))+geom_tile()+scale_x_continuous(expand=c(0,0))+scale_y_continuous(expand=c(0,0))
+erupt+scale_fill_gradient(limits=c(0,0.04))
+```
+
+But we can use more
+
+```{r}
+erupt+scale_fill_gradient2(limits=c(-0.04,0.04),midpoint=mean(df$density))
+```
+
+### Colorbrewer
+
+We can also use colorbrewer colors <https://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3> and the library needs to be installed.
+
+```{r}
+library(RColorBrewer)
+point<-ggplot(data = msleep,aes(brainwt,bodywt,color=vore))+geom_point()+scale_x_log10()+scale_y_log10()
+point+scale_color_brewer(palette = "Set1")
+```
+
+```{r}
+point+scale_color_brewer(palette = "Pastel1")
+```
+
+## Faceting
+
+Faceting generates small multiples each showing a different subset of the data.
+
+> Note. It only works when you are using the same data set.
+
+The default is that you get a single plot
+
+```{r}
+mpg2<-subset(mpg,cyl !=5 & drv %in% c("4","f"))
+qplot(cty,hwy, data=mpg2)+facet_grid(. ~ .)
+```
+
+A single row with multiple columns based on the levels of *cyl*.
+
+```{r}
+qplot(cty,hwy,data=mpg2)+facet_grid(.~cyl)
+```
+
+If you want a single column with multiple rows
+
+```{r}
+qplot(cty,data=mpg2,geom="histogram",bindwidth=2)+facet_grid(cyl~.)
+```
+
+For multiple rows and columns
+
+```{r}
+qplot(cty,hwy,data=mpg2)+facet_grid(drv ~ cyl)
+```
+
+## References
+
+::: {#refs}
+:::
