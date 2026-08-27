@@ -23,7 +23,7 @@ Keep in mind that preliminary scrutiny of the data can readily degenerate into d
 
 > Under torture, the data readily yield false confessions!
 
-![(source: https://www.azquotes.com/quote/593284 )](Figures/massage_data.jpg)
+![(source: https://www.azquotes.com/quote/593284 )](../Figures/massage_data.jpg)
 
 So, to what extend is it legitimate to allow the data to influence the choice of the model that will be used for formal analysis?
 
@@ -33,7 +33,7 @@ EDA is a collection of data display techniques that are intended to let the data
 
 The term EDA was coined by John W. Tukey
 
-![Source: https://en.wikipedia.org/wiki/John_Tukey](Figures/John_Tukey.jpg)
+![Source: https://en.wikipedia.org/wiki/John_Tukey](../Figures/John_Tukey.jpg)
 
 An effective EDA display presents data in a way that will make effect use of the human brain's abilities as patter recognition device. It looks for what may be apparent from a direct, careful and (as far as possible ) assumption-free examination of the data. It has at least four roles:
 
