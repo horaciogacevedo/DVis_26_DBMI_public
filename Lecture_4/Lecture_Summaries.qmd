@@ -35,7 +35,7 @@ attach(nswpsid1)
 
 The definition of the variables is here
 
-![source (https://cran.r-project.org/web/packages/DAAG/DAAG.pdf)](Figures/DAAG_nswpsid1.png)
+![source (https://cran.r-project.org/web/packages/DAAG/DAAG.pdf)](../Figures/DAAG_nswpsid1.png)
 
 ```{r}
 treatement.group<-factor(trt,labels = c("none","training"))
