@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Horacio Gomez-Acevedo, PhD">
+
+<title>Data summary</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="Lecture_Summaries_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Lecture_Summaries_files/libs/quarto-html/quarto.js"></script>
+<script src="Lecture_Summaries_files/libs/quarto-html/popper.min.js"></script>
+<script src="Lecture_Summaries_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Lecture_Summaries_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Lecture_Summaries_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Lecture_Summaries_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Lecture_Summaries_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Lecture_Summaries_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Lecture_Summaries_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Data summary</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Horacio Gomez-Acevedo, PhD </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="purpose-of-data-summary" class="level2">
+<h2 class="anchored" data-anchor-id="purpose-of-data-summary">Purpose of Data Summary</h2>
+<blockquote class="blockquote">
+<p>This lecture is based on <span class="citation" data-cites="maindonald">Maindonald and Braun (<a href="#ref-maindonald" role="doc-biblioref">2008</a>)</span> book chapter 2.</p>
+</blockquote>
+<p>There are some obvious benefits of summarizing our data</p>
+<ul>
+<li>It has interest in its own right</li>
+<li>It can give insights into aspects of data structure that may affect further analysis</li>
+<li>It can be used as data for further analysis.</li>
+</ul>
+</section>
+<section id="counts" class="level2">
+<h2 class="anchored" data-anchor-id="counts">Counts</h2>
+<p>In this section we will use some basic problems that are often overlooked when summarizing data.</p>
+<section id="directionality" class="level3">
+<h3 class="anchored" data-anchor-id="directionality">Directionality</h3>
+<p>Often times, inadvertently we compare groups that are not exactly comparable.</p>
+<p><strong>Example</strong>. In a study there were two groups of individuals with a history of unemployment problem. One group (control) and other (treatment) whose members were exposed to a labor training program.</p>
+<p>The question is what are the relative numbers in each of the two groups who had completed high school (<em>nodeg=0</em>) as opposed to those who had not (<em>nodeg=1</em>)?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DAAG)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">attach</span>(nswpsid1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The definition of the variables is here</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Figures/DAAG_nswpsid1.png" class="img-fluid figure-img"></p>
+<figcaption>source (https://cran.r-project.org/web/packages/DAAG/DAAG.pdf)</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>treatement.group<span class="ot">&lt;-</span><span class="fu">factor</span>(trt,<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"none"</span>,<span class="st">"training"</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>education.group<span class="ot">&lt;-</span><span class="fu">factor</span>(nodeg,<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"completed"</span>,<span class="st">"dropout"</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(treatement.group,education.group)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                education.group
+treatement.group completed dropout
+        none          1730     760
+        training        80     217</code></pre>
+</div>
+</div>
+<p>The proportion of dropouts in the training group is much higher, whereas this condition is reversed in the no training group.</p>
+<p>Next example shows how difficult is to interpret results when directionality changes.</p>
+<p>The study was comparing outcomes for two different types of surgery for kidney stones; A: open which used open surgery, and B:ultrasound, which used a small incision, with the stone destroyed by ultrasound</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Open small</th>
+<th>Ultrasound small</th>
+<th>Open large</th>
+<th>Ultrasound large</th>
+<th>Total small</th>
+<th>Total large</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Yes</td>
+<td>81</td>
+<td>234</td>
+<td>192</td>
+<td>55</td>
+<td>273</td>
+<td>289</td>
+</tr>
+<tr class="even">
+<td>No</td>
+<td>6</td>
+<td>36</td>
+<td>71</td>
+<td>25</td>
+<td>77</td>
+<td>61</td>
+</tr>
+<tr class="odd">
+<td>Success Rate (%)</td>
+<td>93</td>
+<td>87</td>
+<td>73</td>
+<td>69</td>
+<td>78</td>
+<td>83</td>
+</tr>
+</tbody>
+</table>
+<p>The visual representation of this one is given by the following chunk</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>stones<span class="ot">&lt;-</span><span class="fu">array</span>(<span class="fu">c</span>(<span class="dv">81</span>,<span class="dv">6</span>,<span class="dv">234</span>,<span class="dv">36</span>,<span class="dv">192</span>,<span class="dv">71</span>,<span class="dv">55</span>,<span class="dv">25</span>),<span class="at">dim=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="at">Sucess=</span><span class="fu">c</span>(<span class="st">"yes"</span>,<span class="st">"no"</span>), </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">Method=</span><span class="fu">c</span>(<span class="st">"open"</span>,<span class="st">"ultrasound"</span>),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">Size=</span><span class="fu">c</span>(<span class="st">"&lt;2cm"</span>,<span class="st">"&gt;2cm"</span>)))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mosaicplot</span>(stones,<span class="at">sort=</span><span class="dv">3</span><span class="sc">:</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lecture_Summaries_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>If we look only to the totals, we will be missing the directionality changes between the surgery preference depending on the size of the stone.</p>
+</section>
+<section id="simpsons-paradox" class="level3">
+<h3 class="anchored" data-anchor-id="simpsons-paradox">Simpson’s Paradox</h3>
+<p>This example comes from <span class="citation" data-cites="commonerrors">Good and Hardin (<a href="#ref-commonerrors" role="doc-biblioref">2006</a>)</span>.</p>
+<p>An omitted variable may result in two variables appearing to be independent when the opposite is true.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Control</th>
+<th>Treated</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Alive</td>
+<td>6</td>
+<td>20</td>
+</tr>
+<tr class="even">
+<td>Dead</td>
+<td>6</td>
+<td>20</td>
+</tr>
+</tbody>
+</table>
+<p>Apparently, the treatment has has no effect on the death rate. Let’s suppose now that we have the following two tables for males and females separately</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>MALES</th>
+<th>Control</th>
+<th>Treated</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Alive</td>
+<td>4</td>
+<td>8</td>
+</tr>
+<tr class="even">
+<td>Dead</td>
+<td>3</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>FEMALES</th>
+<th>Control</th>
+<th>Treated</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Alive</td>
+<td>2</td>
+<td>12</td>
+</tr>
+<tr class="even">
+<td>Dead</td>
+<td>3</td>
+<td>15</td>
+</tr>
+</tbody>
+</table>
+<p>For males, treatment reduces the male death rate from 3 of 7 (0.43) to 5 of 13 (0.38).</p>
+<p>For females, death rate is reduced from 3 of 5 (0.6) to 12 of 27 (0.55).</p>
+<p>Both sexes show a reduction, but the combined population does not!</p>
+</section>
+</section>
+<section id="summaries" class="level2">
+<h2 class="anchored" data-anchor-id="summaries">Summaries</h2>
+<p>There is an interesting function in R called <em>aggregate</em>() This function automatically splits the data frame according to specified combination of factor levels and a key advantage is that you can apply a function for each one of the subgroups created!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DAAG)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">attach</span>(kiwishade)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>kiwimeans<span class="ot">&lt;-</span><span class="fu">aggregate</span>(yield, <span class="at">by=</span><span class="fu">list</span>(block,shade), mean)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(kiwimeans)<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"block"</span>,<span class="st">"shade"</span>, <span class="st">"mean_yield"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(kiwimeans,<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  block   shade mean_yield
+1  east    none    99.0250
+2 north    none   104.0250
+3  west    none    97.5575
+4  east Aug2Dec   105.5550</code></pre>
+</div>
+</div>
+<p>This chunk of code will print a nice summary of our data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lattice)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(shade <span class="sc">~</span> yield <span class="sc">|</span> block, <span class="at">data=</span>kiwishade, <span class="at">pch=</span><span class="dv">1</span>,<span class="at">aspect=</span><span class="dv">1</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel=</span><span class="cf">function</span>(x,y,...){<span class="fu">panel.dotplot</span>(x,y,...)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        av<span class="ot">&lt;-</span><span class="fu">sapply</span>(<span class="fu">split</span>(x,y),mean)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        ypos<span class="ot">&lt;-</span><span class="fu">unique</span>(y)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">lpoints</span>(ypos <span class="sc">~</span>av, <span class="at">pch=</span><span class="dv">3</span>,<span class="at">cex=</span><span class="fl">1.25</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">key=</span><span class="fu">list</span>(<span class="at">space=</span><span class="st">"top"</span>, <span class="at">columns=</span><span class="dv">2</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">text=</span><span class="fu">list</span>(<span class="fu">c</span>(<span class="st">"Individual vine yields"</span>, <span class="st">"plot means (4 vines)"</span>)),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">points=</span><span class="fu">list</span>(<span class="at">pch=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>),<span class="at">cex=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="fl">1.25</span>))),<span class="at">layout=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lecture_Summaries_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Hmisc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'Hmisc'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    format.pval, units</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(kiwishade)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>kiwishade 
+
+ 4  Variables      48  Observations
+--------------------------------------------------------------------------------
+yield 
+       n  missing distinct     Info     Mean  pMedian      Gmd      .05 
+      48        0       48        1    96.53    96.66    7.767    85.84 
+     .10      .25      .50      .75      .90      .95 
+   87.21    92.38    96.67   101.53   105.05   107.55 
+
+lowest : 81.43  84.12  85.4   86.65  87.06 , highest: 105.77 106.67 108.02 108.32 108.87
+--------------------------------------------------------------------------------
+block 
+       n  missing distinct 
+      48        0        3 
+                            
+Value       east north  west
+Frequency     16    16    16
+Proportion 0.333 0.333 0.333
+--------------------------------------------------------------------------------
+shade 
+       n  missing distinct 
+      48        0        4 
+                                          
+Value         none Aug2Dec Dec2Feb Feb2May
+Frequency       12      12      12      12
+Proportion    0.25    0.25    0.25    0.25
+--------------------------------------------------------------------------------
+plot 
+       n  missing distinct 
+      48        0       12 
+
+east.Aug2Dec (4, 0.083), east.Dec2Feb (4, 0.083), east.Feb2May (4, 0.083),
+east.none (4, 0.083), north.Aug2Dec (4, 0.083), north.Dec2Feb (4, 0.083),
+north.Feb2May (4, 0.083), north.none (4, 0.083), west.Aug2Dec (4, 0.083),
+west.Dec2Feb (4, 0.083), west.Feb2May (4, 0.083), west.none (4, 0.083)
+--------------------------------------------------------------------------------</code></pre>
+</div>
+</div>
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-commonerrors" class="csl-entry" role="listitem">
+Good, P. H., and J. W. Hardin. 2006. <em>Common Errors in Statistics (and How to Avoid Them)</em>. Wiley.
+</div>
+<div id="ref-maindonald" class="csl-entry" role="listitem">
+Maindonald, J., and J. Braun. 2008. <em>Data Analysis and Graphics Using <span>R</span>: An Example-Based Approach</em>. Second Edition. Cambridge Series in Statistical and Probabilistic Mathematics. Cambridge University Press.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

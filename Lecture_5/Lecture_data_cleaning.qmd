@@ -1,0 +1,190 @@
+---
+title: "Data Cleaning"
+author: "Horacio Gomez-Acevedo"
+format: html
+bibliography: ../mainref.bib
+editor: visual
+---
+
+## Tibbles
+
+We will follow the online version of the book R for Data Science <https://r4ds.had.co.nz/tibbles.html>
+
+Tibbles are a new object that act as an *advanced* version of a data frame. The expansion of a data frame traditional structure allows us to clean data faster and more efficiently.
+
+```{r}
+library(tidyverse)
+```
+
+> If you see in your system a message as above, there is no need to panic. It means that are *conflicts* because there are functions with the same name coming from different packages.
+
+We will begin with the traditional data frame *iris*. Here we just print the data frame and check that it is indeed a *data.frame* object.
+
+```{r}
+head(iris)
+print(class(iris))
+```
+
+Now, we convert this data frame to a *tibble*
+
+```{r}
+t.iris<-as_tibble(iris)
+t.iris
+```
+
+### Building tibbles
+
+```{r}
+tibble(
+  x = 1:5, 
+  y = 1, 
+  z = x ^ 2 + y
+)
+```
+
+What are the differences?
+
+- a tibble is not adding a row number
+- a tibble does not change the name of the variables
+- a tibble does not convert strings into factors
+
+There is a nice function to *transpose* a tibble called *tribble*. It is useful for getting data entry within your code. Column headings start with a *formula* (meaning that they should include "\~" symbol)
+
+```{r}
+tribble(
+  ~x, ~y, ~z,
+  #--|--|----
+  "a", 2, 3.6,
+  "b", 1, 8.5
+)
+```
+
+### Data extraction from tibbles
+
+Normal operations that we have used already in data frames
+
+```{r}
+df <- tibble(
+  x = runif(5),
+  y = rnorm(5)
+)
+df
+# Extract by name
+df$x
+#or
+df[["x"]]
+
+# Extract by position
+df[[1]]
+#> [1] 0.73296674 0.23436542 0.66035540 0.03285612 0.46049161
+# Contrast this with 
+df[,1]
+```
+
+```{r}
+annoying <- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`))
+)
+annoying
+```
+
+Some more examples
+
+```{r}
+a <- 1:5
+tibble(a, a ** 2)
+```
+
+The printout shows something interesting, the name of the second column is assigned as \* a\^2 \*. But this is a valid name for tibbles!
+
+We can play a bit more
+
+```{r}
+tibble(a, b = a * 2, c = 1,`a+b`=a+b)
+
+```
+
+### Adding rows and columns
+
+The basic function works as follows
+
+```{r}
+df <- tibble(x = 1:3, y = 3:1)
+df<-add_row(df,x=4,y=10)
+```
+
+However, it is more efficient using the so-called **pipelines** that are used widely in tidyverse
+
+```{r}
+df %>% add_row(x = 5, y = 10)
+```
+
+There is more functionality that we can use with \*add_row\*\*
+
+```{r}
+# You can specify where to add the new rows
+df<-df %>% add_row(x = 6, y = 0, .before = 2)
+```
+
+Something similar is for adding columns
+
+```{r}
+
+df<-df %>% add_column(z= 1:length(df$x))
+```
+
+## Tidyr
+
+There is a very nice overview of what is *tidy data*
+
+1.  Each variable forms a column
+2.  Each observation forms a row
+3.  Each type of observational unit forms a table
+
+*Tidyr* is part of *tidyverse* <https://tidyr.tidyverse.org/>. Run in your console
+
+```{r}
+vignette("tidy-data")
+```
+
+We will use parts of the data that appears on the paper @tidydatap
+
+```{r}
+billboard
+```
+
+Then, if we use *pivot_longer* we can put that data frame in a better shape
+
+```{r}
+billboard2 <- billboard %>% 
+  pivot_longer(
+    wk1:wk76, 
+    names_to = "week", 
+    values_to = "rank", 
+    values_drop_na = TRUE
+  )
+billboard2
+```
+
+Moreover, we can remove the *wk* from each week for analysis and adjusting for the exact week!
+
+```{r}
+billboard3 <- billboard2 %>%
+  mutate(
+    week = as.integer(gsub("wk", "", week)),
+    date = as.Date(date.entered) + 7 * (week - 1),
+    date.entered = NULL
+  )
+billboard3
+```
+
+Sorting by artist, track and week
+
+```{r}
+billboard3 %>% arrange(artist, track, week)
+```
+
+### Cheatsheet
+
+This is very useful <https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf>
