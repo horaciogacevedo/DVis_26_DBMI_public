@@ -1,0 +1,132 @@
+---
+title: "Statistical Review"
+author: "Horacio Gomez-Acevedo, PhD"
+format: html
+bibliography: mainref.bib
+editor: visual
+---
+
+This lecture is based on @maindonald book chapter 3 and @harrell chapter 2
+
+## General Overview
+
+
+In general, an statistical model relies on probabilistic forms of description of events that have an application in science. They normally consist of a deterministic component and a random component that attempts to capture experimental variability.
+
+There are a number of models that can be used and it is critical to carry on a formal and scientific analysis. Models' choice may depend on experience with the data itself, subject area knowledge, and sometimes motivated by the EDA.
+
+A simple example is given with the DAAG package
+
+```{r}
+library(DAAG)
+attach(roller)
+```
+
+In this data set the variable *depression* for different *weights*  of lawn roller are given. Assuming a line through the origin the model can be represented as
+
+$$
+\text{depression}=\beta* \text{weight}+ \text{noise}
+$$
+where $\beta$ needs to be estimated, and the noise is different for each different part of the lawn.
+
+Mathematically we represent here as 
+
+$$Y= \mu + \varepsilon$$
+
+The model prediction $\mu$ is the signal component of the model, whereas $\varepsilon$ is the noise or statistical error component. Sometimes, we use the idea of the *expected value* and it is normal to define $\mu=E(Y|X)$. 
+
+## Models
+
+The above model treats the pattern of change of depression with roller weight as a *deterministic* or *fixed* effects. The measured values of depression incorporate, in addition, a *random* effect that reflects variation from one part of the lawn to another. 
+
+
+
+## Fitting models
+
+In R, we use a *formula* expression to suggest the relationship
+
+```{r}
+roller.lm <- lm (depression ~ weight, data=roller)
+plot(depression~ weight,data=roller)
+abline(roller.lm)
+```
+
+Note that the model object *roller.lm* is a list
+
+```{r}
+names(roller.lm)
+```
+
+Then, you can extract extra information
+
+```{r}
+roller.lm$coefficients
+```
+
+Then, if you want to extract the estimated value of $\beta$ you can use the command $\beta$=`r roller.lm$coefficients['weight'] `
+
+## Regression Models
+
+We will generalize the above ideas to accommodate future models.
+
+Simply stated, a regression model is defined in terms of a connection between the predictors $X$ and the response $Y$. If $C(Y|X)$ denote a property (or function) of the distribution of $Y$ given $X$ (our *covariates*).
+
+In the above example 
+
+$$
+C(Y|\text{weight})= \beta *\text{weight} + \beta_0 
+$$
+
+Moreover, this ordinary linear regression model the expected or average of $Y$ given *weight* or 
+
+$$
+C(Y|\text{weight})=E(Y|\text{weight})
+$$
+and it is assumed that $Y$ has a normal distribution with mean $\beta$ and constant variance $\sigma^2$. 
+
+A more general linear regression model can be given by
+
+$$
+C(Y|X)= g(X\beta)
+$$
+where $g$ is a function (oftentimes nonlinear) and $X \beta$ represents a weighted sum of all the $X$s.
+
+For instance for regression models we will see that 
+
+$$
+C(Y|X)= \text{Prob}(Y=1|X)= \frac{1}{1+ \exp(-X\beta)}
+$$
+
+Sometimes, it is better to isolate $X\beta$ through what is commonly called *link function*. In the previous example if we define $h(u)=\log (u/(1-u))$
+
+$$
+h(C(Y|X))=h(\text{Prob}(Y=1|X))= \log(\exp(X\beta))=X\beta
+$$
+
+Thus, if we denote $C'(Y|X)=h(C(Y|X))$ a **general linear model** can be written as
+
+$$
+C'(Y|X)=X\beta
+$$
+
+The left hand side of the previous equation means that we have done some transformation with $Y$, whereas the right hand side is the *linear regression* part. 
+
+## Interpreting Model Parameters
+
+If we consider the model 
+
+$$
+C'(Y|X)= X\beta= \beta_0+ \beta_1 X_1 + \cdots + \beta_p X_p
+$$
+
+the regression parameter $\beta_j$ is interpreted as the change in the property $C'$ of $Y$  per unit change in the descriptor variable $X_j$ when all other descriptors remain constant
+
+$$
+\beta_j= C'(Y|X_1,X_2,\ldots,X_j+1,\ldots,X_p)
+-C'(Y|X_1,X_2,\ldots,X_j,\ldots,X_p)
+$$
+
++ In ordinary linear regression, $\beta_j$ is the change in expected value of $Y$ per unit change in $X_j$.
++ In logistic regression, $\beta_j$ is the change in log odds that $Y=1$ per unit change in $X_j$.
+
+## References
