@@ -2,7 +2,7 @@
 title: "Statistical Review"
 author: "Horacio Gomez-Acevedo, PhD"
 format: html
-bibliography: mainref.bib
+bibliography: ../mainref.bib
 editor: visual
 ---
 
