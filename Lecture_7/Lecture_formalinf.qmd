@@ -1,0 +1,301 @@
+---
+title: "Formal inference"
+author: "Horacio Gomez-Acevedo"
+institute: DBMI
+bibliography: mainref.bib
+format: html
+editor: visual
+---
+
+## Estimation
+
+This lecture is based on @maindonald book chapter 4, and @pestman
+
+A **population parameter** is a summary of some aspect of the whole population.
+
+We will play with a very simple data set found at <https://www.worlddata.info/average-bodyheight.php>
+
+```{r, echo=TRUE}
+library(readr)
+world_data_combined<-read_csv("Data_sets/world_data_combined.csv", 
+    col_types = cols(...2 = col_skip(), ...6 = col_skip()))
+colnames(world_data_combined)<-c("Country","Male.Height",
+                                 "Male.Weight","Male.BMI",
+                                 "Female.Height","Female.Weight",
+                                 "Female.BMI")
+```
+
+We know that the height distribution is normally distributed, and we will find the **mean height in men** and denote that by $\mu_M$. We will assume that this is the **population parameter** (which we normally don't have).
+
+```{r,echo=TRUE}
+mu.m<-mean(world_data_combined$Male.Height)
+mu.m
+```
+
+And the best estimate of the standard deviation $\sigma_M$ (as population parameter) is
+
+```{r,echo=TRUE}
+sigma.m<-sd(world_data_combined$Male.Height)
+sigma.m
+```
+
+## Small sample estimation
+
+If we are conducting an experiment in say 10 countries. We will have an estimate of this height in males $\hat{\mu}_{10}$
+
+```{r,echo=FALSE}
+suppressPackageStartupMessages(require(dplyr))
+```
+
+```{r,echo=TRUE}
+my.sample<-world_data_combined %>% slice_sample(n=10)
+```
+
+Now, my estimate of the average height in males will be
+
+```{r,echo=TRUE}
+mu.10<- mean(my.sample$Male.Height)
+mu.10
+```
+
+How confident am I that this is a good estimate for the $\mu_M$?
+
+Let's assume that your interest is geographically located in a region in Asia
+
+```{r,echo=TRUE}
+my.countries<-c("East Timor","Bangladesh",
+                "Brunei","Laos","Philipines",
+                "Madagascar","Nepal","Maynmar",
+                "Indonesia","Sri Lanka","Cambodia")
+my.countries.df<-world_data_combined %>% 
+  filter(Country %in% my.countries)
+my.countries.mu<-mean(my.countries.df$Male.Height)
+my.countries.mu
+```
+
+## Assessment of accuracy
+
+The **standard error** is defined as the standard deviation of the sampling distribution of the statistic. In our simple case, the statistic is the mean but it is very common so it is called **standard error of the mean (SEM)**.
+
+If the data values are independent, an estimate of the SEM is \begin{equation*}
+s_{\overline{x}}= \frac{s}{\sqrt{n}}
+\end{equation*}
+
+The $s$ represents an estimate of the standard deviation $\sigma_M$.
+
+The SEM indicates the extent to which the sample mean might be expected to vary from one sample to another.
+
+Let's see with our sample of 10, and calculate the SEM
+
+```{r,echo=TRUE}
+s.10<-sigma.m/sqrt(10)
+s.10
+```
+
+> Note that this number is for samples of size 10.
+
+A small value of SEM suggests that the sample mean might be quite close to the population mean.
+
+### Simulation with samples of size 10
+
+```{r}
+all.male.data<-world_data_combined$Male.Height
+size.10.samples.mean<-rep(0,40)
+for( i in 1:40){
+  size.10.samples.mean[i]<-mean(sample(all.male.data,10))
+}
+hist(size.10.samples.mean)
+```
+
+### Simulation with samples of size 5
+
+```{r}
+size.5.samples.mean<-rep(0,40)
+for( i in 1:40){
+  size.5.samples.mean[i]<-mean(sample(all.male.data,5))
+}
+hist(size.5.samples.mean)
+```
+
+## Standardization
+
+A very common technique in statistics is to **standardize** our data. We use the formula
+
+\begin{equation*}
+t= \frac{\overline{x}-\mu}{\text{SEM}}
+\end{equation*}
+
+The value of $t$ counts up the number of standard error units between the **true value** $\mu$ and the sample estimate $\overline{x}$; it can be thought of as a standardized distance between the **true mean** and the sample mean.
+
+## The $t$-statistic
+
+The variability of $t$ has 2 sources:
+
+- the sampling variability of $\overline{x}$
+- the sampling variability of SEM
+
+Moreover, it depends on the degrees of freedom associated with the denominator (SEM)
+
+> For a population of size $n$, we need $n-1$ degrees of freedom to estimate the standard deviation (after computing the mean)
+
+## t-statistic plots
+
+The shape of the $t$-statistic varies with the degrees of freedom.
+
+![](Figures/fig_tstats.png)
+
+## Useful calculations
+
+When we plot the probability density function, we know that the area under the curve represents a probability estimation.
+
+![](Figures/fig_density.png)
+
+Our goal is to calculate the area under the density curve within some specified number of standard errors in *both sides* of the mean.
+
+More specifically, what distance from the mean gives a given probability (say 95%)? Note that 1-0.025=0.975, and 0.025 is half of the 5% (since the distribution is symmetric).
+
+- Normal distribution $N(0,1)$. In this case, we find out the value by using the following code.
+
+```{r,echo=TRUE}
+critical.n<-qnorm(0.975)
+
+```
+
+The function *qnorm* makes the calculations for the normal distribution. The value `{r} critical.n`
+
+## Useful calculations (normal case)
+
+![](Figures/fig_normalplot.png)
+
+## Useful calculations (t-distribution)
+
+- t-distribution (5 df). In this case, we find out the value by using the following code. Note that 1-0.975=0.025 which is half of the 5%.
+
+```{r,echo=TRUE}
+critical_t<-qt(0.975,5)
+```
+
+![](Figures/fig_tdistplot.png)
+
+## Interpretation
+
+Based on the previous calculations, we can make statements such as the following
+
+In a sample of $n=6$ observations $(x_1,\ldots, x_6)$ independent and normally distributed, there is a 95% probability that the statistic $t_5= \frac{\overline{x}-\mu}{s/\sqrt{6}}$ lie between (- `{r} critical_t`, `{r} critical_t`)
+
+Or
+
+In 95% of the samples, their average $\overline{x}$ will lie within a distance of $2.57 s/\sqrt{6}$ away from the true mean $\mu$.
+
+## Confidence intervals
+
+In the previous example, we write
+
+$$P\left( -2.57  \le \frac{\overline{x}-\mu}{s/\sqrt{6}} \le 2.57
+\right) = 0.95$$ The number 0.95 is referred to as **confident coefficient**. If we rewrite the above expression as
+
+$$P\left(  \overline{x} -2.57 \frac{s}{\sqrt{6}} \le \mu \le  \overline{x}+2.57 \frac{s}{\sqrt{6}}
+\right) = 0.95$$ The 95% **confidence interval** refers to the interval estimation of the parameter $\mu$, in this case $( \overline{x} -2.57 \frac{s}{\sqrt{6}} , \overline{x}+2.57 \frac{s}{\sqrt{6}} )$.
+
+## A comparison table
+
+We often require the critical values (as above the -2.57). Here is a short table to show some of those values.
+
+| Symmetrical Probability | One-sided Probability | N(0,1) distribution | $t_8$ distribution |
+|------------------|------------------|------------------|------------------|
+| 68.3% | 84.1% | 1 | 1.07 |
+| 95% | 97.5% | 1.96 | 2.31 |
+| 99% | 99.5% | 2.58 | 3.36 |
+| 99.9% | 99.95% | 3.29 | 5.04 |
+
+## A simulation
+
+```{r,echo=TRUE}
+set.seed(2024)
+mysample<-rnorm(9,30,5)
+s<-sd(mysample)
+mymu<-mean(mysample)
+my.crit<-2.31
+low.bound<-mymu - my.crit*s/sqrt(9)
+up.bound<-mymu + my.crit*s/sqrt(9)
+```
+
+We know that with probability of 95% the real mean will be between (`{r} low.bound`,`{r} up.bound`). The real mean was 30.
+
+What happens when you remove the seed?
+
+## Requirements for hypothesis testing
+
+- Data (random sample)
+- Statistic (a special type of function)
+- A value (called the level of significance)
+- A (null) hypothesis $H_0$
+
+## Hypothesis testing
+
+A **statistical hypothesis** $H$ is a conjecture about the probability distribution of a population.
+
+$H_0$ is called the *null hypothesis* (for historical reasons) and $H_1$ the *alternative hypothesis*.
+
+We say that we commit a *type I error* if we decide to accept $H_1$, whereas in reality $H_0$ is true. The probability of committing a type I error will be denoted by $\alpha$.
+
+Acceptance of $H_0$ whereas $H_1$ is true is called a **type II error**.
+
+The probability of committing a type II error will be denoted by $\beta$.
+
+## Types of Errors
+
+![](Figures/fig_hypothesis_table.png)
+
+## Test statistics
+
+Suppose we are dealing with a $N(\mu,\sigma^2)$-distributed population where both $\mu$ and $\sigma$ are unknown. We have collected a sample within this population of $n$ independent measures $x_1,\ldots, x_n$. If we wish to test the hypothesis $$      H_0 \colon \mu=\mu_0 \text{ against } H_1 \colon \mu\ne \mu_0
+    $$ And we have calculated from that sample $s^2= \frac{1}{n-1}\sum (x_i -\overline{x})^2$.
+
+The outcome of the variable
+
+$$      T= \frac{\overline{X}-\mu_0}{S/\sqrt{n}} $$
+
+is decisive in the choice to reject $H_0$ or not. This is called the **test statistic** for this hypothesis test. Under the $H_0$ the test statistics is $t$-distributed with $n-1$ degrees of freedom.
+
+The decision becomes
+
+If\
+$$\frac{\overline{X}-\mu_0}{S/\sqrt{n}} < -c  \quad \text{ or } \quad \frac{\overline{X}-\mu_0}{S/\sqrt{n}} > c$$ then assume $H_1$.
+
+If $$-c \le \frac{\overline{X}-\mu_0}{S/\sqrt{n}} < c$$ then, we assume $H_0$.
+
+## p-values
+
+The expression known as the level of significance $\alpha$ will help us to find the critical value $c$. $$      \alpha= P\left(\left|\frac{\overline{X}-\mu_0}{S/\sqrt{n}}\right|\ge c\right)
+    $$ Then, for a given outcome of the tests statistic is $u$, the $p$-value associated is given by the quantity
+
+$$      P\left(\left|\frac{\overline{X}-\mu_0}{S/\sqrt{n}}\right|\ge |u|\right)
+    $$
+
+## Rule based on p-values
+
+- If $p$-value is $\le \alpha$, then assume $H_1$
+- If $p$-values is $\ge \alpha$, then assume $H_0$.
+
+"A small p-value makes the null hypothesis appear implausible. But note that it is not a probability statement about the null hypothesis itself, or for that matter about its alternative. All it offers is an assessment of implications that flow from accepting the null hypothesis. "
+
+### P-values analog in criminal trials
+
+> If the defendant is innocent, what is the chance that we would observe such extreme criminal evidence?
+
+<https://newonlinecourses.science.psu.edu/statprogram/reviews/statistical-concepts/hypothesis-testing/p-value-approach>
+
+## Confidence intervals and hypothesis testing for $t$-distribution
+
+We may be comparing one sample or differences between two samples.
+
+|   | Confidence interval | Test statistic | Degrees of freedom |
+|------------------|------------------|------------------|------------------|
+| One-sample | $\overline{X}\pm t_{crit} SE(\overline{X})$ | $t= \frac{\overline{X}}{SE(\overline{X})}$ | $n-1$ |
+| Two-sample (equal SD) | $\overline{X}_2-\overline{X}_1 \pm t_{crit} SE(\overline{X}_2-\overline{X}_1 )$ | $t= \frac{\overline{X}_2-\overline{X}_1 }{SE(\overline{X}_2-\overline{X_1} )}$ | $n_1+n_2-2$ |
+| Two-sample (unequal SD) | $\overline{X}_2-\overline{X}_1 \pm t_{crit} SED$ | $t= \frac{\overline{X}_2-\overline{X}_1 }{SED}$ | $n_1+n_2-2$ |
+
+where $SED= \sqrt{ \frac{s_1^2}{n_1}+ \frac{s_2^2}{n_2}}$
+
+## References
