@@ -77,7 +77,9 @@ my.countries.mu
 
 The **standard error** is defined as the standard deviation of the sampling distribution of the statistic. In our simple case, the statistic is the mean but it is very common so it is called **standard error of the mean (SEM)**.
 
-If the data values are independent, an estimate of the SEM is \begin{equation*}
+If the data values are independent, an estimate of the SEM is 
+
+\begin{equation*}
 s_{\overline{x}}= \frac{s}{\sqrt{n}}
 \end{equation*}
 
@@ -142,13 +144,13 @@ Moreover, it depends on the degrees of freedom associated with the denominator (
 
 The shape of the $t$-statistic varies with the degrees of freedom.
 
-![](Figures/fig_tstats.png)
+![](../Figures/fig_tstats.png)
 
 ## Useful calculations
 
 When we plot the probability density function, we know that the area under the curve represents a probability estimation.
 
-![](Figures/fig_density.png)
+![](../Figures/fig_density.png)
 
 Our goal is to calculate the area under the density curve within some specified number of standard errors in *both sides* of the mean.
 
@@ -165,7 +167,7 @@ The function *qnorm* makes the calculations for the normal distribution. The val
 
 ## Useful calculations (normal case)
 
-![](Figures/fig_normalplot.png)
+![](../Figures/fig_normalplot.png)
 
 ## Useful calculations (t-distribution)
 
@@ -175,7 +177,7 @@ The function *qnorm* makes the calculations for the normal distribution. The val
 critical_t<-qt(0.975,5)
 ```
 
-![](Figures/fig_tdistplot.png)
+![](../Figures/fig_tdistplot.png)
 
 ## Interpretation
 
@@ -191,11 +193,19 @@ In 95% of the samples, their average $\overline{x}$ will lie within a distance o
 
 In the previous example, we write
 
-$$P\left( -2.57  \le \frac{\overline{x}-\mu}{s/\sqrt{6}} \le 2.57
-\right) = 0.95$$ The number 0.95 is referred to as **confident coefficient**. If we rewrite the above expression as
+$$
+P\left( -2.57  \le \frac{\overline{x}-\mu}{s/\sqrt{6}} \le 2.57
+\right) = 0.95
+$$
 
-$$P\left(  \overline{x} -2.57 \frac{s}{\sqrt{6}} \le \mu \le  \overline{x}+2.57 \frac{s}{\sqrt{6}}
-\right) = 0.95$$ The 95% **confidence interval** refers to the interval estimation of the parameter $\mu$, in this case $( \overline{x} -2.57 \frac{s}{\sqrt{6}} , \overline{x}+2.57 \frac{s}{\sqrt{6}} )$.
+The number 0.95 is referred to as **confident coefficient**. If we rewrite the above expression as
+
+$$
+P\left(  \overline{x} -2.57 \frac{s}{\sqrt{6}} \le \mu \le  \overline{x}+2.57 \frac{s}{\sqrt{6}}
+\right) = 0.95
+$$ 
+
+The 95% **confidence interval** refers to the interval estimation of the parameter $\mu$, in this case $( \overline{x} -2.57 \frac{s}{\sqrt{6}} , \overline{x}+2.57 \frac{s}{\sqrt{6}} )$.
 
 ## A comparison table
 
@@ -245,33 +255,57 @@ The probability of committing a type II error will be denoted by $\beta$.
 
 ## Types of Errors
 
-![](Figures/fig_hypothesis_table.png)
+![](../Figures/fig_hypothesis_table.png)
 
 ## Test statistics
 
-Suppose we are dealing with a $N(\mu,\sigma^2)$-distributed population where both $\mu$ and $\sigma$ are unknown. We have collected a sample within this population of $n$ independent measures $x_1,\ldots, x_n$. If we wish to test the hypothesis $$      H_0 \colon \mu=\mu_0 \text{ against } H_1 \colon \mu\ne \mu_0
-    $$ And we have calculated from that sample $s^2= \frac{1}{n-1}\sum (x_i -\overline{x})^2$.
+Suppose we are dealing with a $N(\mu,\sigma^2)$-distributed population where both $\mu$ and $\sigma$ are unknown. We have collected a sample within this population of $n$ independent measures $x_1,\ldots, x_n$. If we wish to test the hypothesis 
+
+$$
+H_0 \colon \mu=\mu_0 \text{ against } H_1 \colon \mu\ne \mu_0
+$$ 
+
+And we have calculated from that sample $s^2= \frac{1}{n-1}\sum (x_i -\overline{x})^2$.
 
 The outcome of the variable
 
-$$      T= \frac{\overline{X}-\mu_0}{S/\sqrt{n}} $$
+$$
+T= \frac{\overline{X}-\mu_0}{S/\sqrt{n}} 
+$$
 
 is decisive in the choice to reject $H_0$ or not. This is called the **test statistic** for this hypothesis test. Under the $H_0$ the test statistics is $t$-distributed with $n-1$ degrees of freedom.
 
 The decision becomes
 
-If\
-$$\frac{\overline{X}-\mu_0}{S/\sqrt{n}} < -c  \quad \text{ or } \quad \frac{\overline{X}-\mu_0}{S/\sqrt{n}} > c$$ then assume $H_1$.
+If
 
-If $$-c \le \frac{\overline{X}-\mu_0}{S/\sqrt{n}} < c$$ then, we assume $H_0$.
+$$
+\frac{\overline{X}-\mu_0}{S/\sqrt{n}} < -c  \quad \text{ or } \quad \frac{\overline{X}-\mu_0}{S/\sqrt{n}} > c
+$$ 
+
+then assume $H_1$.
+
+If 
+
+$$
+-c \le \frac{\overline{X}-\mu_0}{S/\sqrt{n}} < c
+$$ 
+
+then, we assume $H_0$.
 
 ## p-values
 
-The expression known as the level of significance $\alpha$ will help us to find the critical value $c$. $$      \alpha= P\left(\left|\frac{\overline{X}-\mu_0}{S/\sqrt{n}}\right|\ge c\right)
-    $$ Then, for a given outcome of the tests statistic is $u$, the $p$-value associated is given by the quantity
+The expression known as the level of significance $\alpha$ will help us to find the critical value $c$. 
 
-$$      P\left(\left|\frac{\overline{X}-\mu_0}{S/\sqrt{n}}\right|\ge |u|\right)
-    $$
+$$
+\alpha= P\left(\left|\frac{\overline{X}-\mu_0}{S/\sqrt{n}}\right|\ge c\right)
+$$
+
+Then, for a given outcome of the tests statistic is $u$, the $p$-value associated is given by the quantity
+
+$$
+P\left(\left|\frac{\overline{X}-\mu_0}{S/\sqrt{n}}\right|\ge |u|\right)
+$$
 
 ## Rule based on p-values
 
