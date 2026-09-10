@@ -17,7 +17,7 @@ We will play with a very simple data set found at <https://www.worlddata.info/av
 
 ```{r, echo=TRUE}
 library(readr)
-world_data_combined<-read_csv("Datasets/world_data_combined.csv", 
+world_data_combined<-read_csv("../Datasets/world_data_combined.csv", 
     col_types = cols(...2 = col_skip(), ...6 = col_skip()))
 colnames(world_data_combined)<-c("Country","Male.Height",
                                  "Male.Weight","Male.BMI",
