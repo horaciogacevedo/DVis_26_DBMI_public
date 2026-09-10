@@ -79,9 +79,9 @@ The **standard error** is defined as the standard deviation of the sampling dist
 
 If the data values are independent, an estimate of the SEM is 
 
-\begin{equation*}
+$$
 s_{\overline{x}}= \frac{s}{\sqrt{n}}
-\end{equation*}
+$$
 
 The $s$ represents an estimate of the standard deviation $\sigma_M$.
 
@@ -123,9 +123,9 @@ hist(size.5.samples.mean)
 
 A very common technique in statistics is to **standardize** our data. We use the formula
 
-\begin{equation*}
+$$
 t= \frac{\overline{x}-\mu}{\text{SEM}}
-\end{equation*}
+$$
 
 The value of $t$ counts up the number of standard error units between the **true value** $\mu$ and the sample estimate $\overline{x}$; it can be thought of as a standardized distance between the **true mean** and the sample mean.
 
