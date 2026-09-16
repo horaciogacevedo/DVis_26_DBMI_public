@@ -2,7 +2,7 @@
 title: "Simple Regression"
 author: "Horacio Gomez-Acevedo"
 format: html
-bibliography: mainref.bib
+bibliography: ../mainref.bib
 editor: visual
 ---
 
