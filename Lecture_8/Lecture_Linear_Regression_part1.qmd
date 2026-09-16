@@ -1,0 +1,317 @@
+---
+title: "Simple Regression"
+author: "Horacio Gomez-Acevedo"
+format: html
+bibliography: mainref.bib
+editor: visual
+---
+
+## Regression with a single predictor
+
+The lecture will follow @maindonald chapter 5
+
+The basic conventions for linear regression
+
+- The *explanatory* variable is plotted in the $x$-axis.
+- The *outcome* variable is plotted in the $y$-axis.
+
+The scatter-plot may indicate that the regression line is plausible.
+
+**Rule of thumb**
+
+If there are many observations, try fitting a smooth curve.
+
+## Fitting a line to data
+
+The basic assumptions are:
+
+- There is just one predictor variable $x$
+
+- The values of $y$ are independent
+
+- Given $x$, the response $y$ has a normal distribution with mean given by a linear function of $x$. This is a very subtle point.
+
+The model is represented as
+
+$$y=\alpha+\beta x + \varepsilon$$
+
+Here, $\varepsilon$ represents the random noise.
+
+Giving a set of observations $(x_1,y_1),\ldots, (x_n,y_n)$, we try to find the values that *mimic the trend* that we observe in the data. We called these **estimates** of the slope and y-intercept. Namely,
+
+$$ \hat{y}= a+ b x$$
+
+And the line that is represented is the **linear trend** that passes through the observed values.
+
+An important set of measures that are important are referred to as **residuals**
+
+$$e_i=y_i -\hat{y}_i= y_i - (a+bx_i)$$
+
+> The estimation of $a$ and $b$ depends on the minimization of the sum of squares of the residuals
+
+### Visual Example
+
+We will explore whether there is a suspected linear relationship between the hours studying and the GPA from our data set.
+
+```{r}
+library(ggplot2)
+h.data<-read.csv("Data_sets/gpa.csv")
+```
+
+Let's plot our results
+
+```{r}
+p<-ggplot(h.data,aes(x=studyweek,y=gpa))+geom_point()
+p
+```
+
+Let's explore the function *linear model lm*
+
+```{r}
+gpa.lm<-lm(gpa ~ studyweek,data = h.data)
+gpa.lm
+```
+
+There are two ways to plot this line back into our data
+
+- First method implies the direct use of the output from the *lm* object
+
+```{r}
+a<-as.numeric(gpa.lm$coefficients[1])
+b<-as.numeric(gpa.lm$coefficients[2])
+p+geom_abline(intercept = a,slope = b)
+```
+
+- The second method involves using the capabilities of *ggplot* itself to handle the plot object.
+
+```{r}
+p+geom_smooth(method="lm",se = F)
+```
+
+Let's explore a bit more what is contained in the linear model object *gpa.lm*
+
+```{r}
+summary(gpa.lm)
+```
+
+#### What do these numbers mean?
+
+First, let's capture them as individual entities
+
+```{r}
+gpa.sum<-summary(gpa.lm)
+a.se<-gpa.sum$coefficients["(Intercept)","Std. Error"]
+b.se<-gpa.sum$coefficients["studyweek","Std. Error"]
+a.tstat<-gpa.sum$coefficients["(Intercept)","t value"]
+b.tstat<-gpa.sum$coefficients["studyweek","t value"]
+a.pval<-gpa.sum$coefficients["(Intercept)","Pr(>|t|)"]
+b.pval<-gpa.sum$coefficients["studyweek","Pr(>|t|)"]
+```
+
+We get estimates of the slope and $y$-intercept and their standard error. For instance $b=$ `r b` and has a standard error of $SE=$ `r b.se`. The value of the $t$-statistic is `r b.tstat` and the corresponding $p$-value of `r b.pval`.
+
+The $p$-values are for testing the following hypotheses:
+
+- $H^1_0: a=0$, and $H^2_0: b=0$.
+
+Thus, we *failed to reject the hypothesis* $H_0^2$ at the 0.05 level of significance.
+
+### Fitted values and Residuals
+
+From the object *gpa.lm* still can give us more information.
+
+```{r}
+res.df<-data.frame(h.data$gpa,h.data$studyweek,fitted.value=predict(gpa.lm),residual=resid(gpa.lm))
+```
+
+### Residual Plots
+
+These plots are useful to check that modeling assumptions are checked.
+
+- A plot of the residuals versus fitted values may suggest that we should be fitting a curve rather than a line
+
+```{r}
+ggplot(gpa.lm,aes(x=.fitted, y=.resid))+geom_point()+geom_hline(yintercept = 0)
+```
+
+- Q-Q plot or normal probability plot of residuals.
+
+```{r}
+p<-ggplot(h.data, aes(sample=gpa))
+p+stat_qq()+stat_qq_line()
+```
+
+#### Digression: Normal probability plot
+
+These plots aim to assess the normality of a variable. Suppose you have the a variable $Z$ and data that you labeled as $(z_1,\ldots, z_m)$ . You follow the next steps:
+
+- Obtain estimates of the mean $\hat{\mu}$ and standard deviation $\hat{\sigma}$ from these observations
+
+- Order your data $(z_{i_1},\ldots,z_{i_n})$ . This means that $z_{i_1}\le z_{i_2} \le z_{i_3} \cdots$.
+
+- Then you build another sequence $w_i$ of normally distributed $N(\hat{\mu},\hat{\sigma})$ as follows: $w_i=\text{Pr}(x\le z_i)$. Alternatively, you can *normalize* your data to a $N(0,1)$.
+
+- Plot the points $(w_{i_k},z_{i_k})$
+
+**If the data** $(z_i)$ are drawn from a normal distribution, then the plot should follow a straight line
+
+The following chunk of code shows how to do obtain the normality plot for the residual.
+
+```{r}
+p<-ggplot(res.df, aes(sample=residual))
+p+stat_qq()+stat_qq_line()
+```
+
+**End of digression**
+
+However, for small data sets departures from the normality assumption are hard to detect.
+
+### Patterns in the residuals
+
+We will use the example from @maindonald and the data set to compare the iron content in slag with a magnetic or chemical method
+
+```{r}
+library(DAAG)
+attach(ironslag)
+```
+
+```{r}
+q<-ggplot(data=ironslag,aes(x=magnetic,y=chemical))+geom_point()
+q+geom_smooth(method="lm",se=F)
+```
+
+Let's check the residuals
+
+```{r}
+iron.lm<-lm(chemical ~ magnetic)
+ggplot(iron.lm,aes(x=.fitted, y=.resid))+geom_point()+geom_hline(yintercept = 0)
+```
+
+The points look that are further away from the *zero* line as we are getting lower *fitted* values.
+
+One way to verify this trend is to plot the predicted values vs. the square root of the (absolute) value of the residuals.
+
+```{r}
+iron.df<-data.frame(pred.chem=predict(iron.lm),sqrt.res.iron=sqrt(abs(resid(iron.lm))))
+ggplot(iron.df, aes(x=pred.chem,y=sqrt.res.iron))+geom_point()+geom_smooth(method="lm",se=F)
+```
+
+Indeed it was not a visual artifact, the standard deviation is decreasing as we *travel* through the fitted line. In conclusion, this data set may not be suited for a simple linear regression model.
+
+Compare this fitting with a *loess*
+
+```{r}
+q+geom_smooth(method="loess",se=F)
+```
+
+However, we may run into the problem of *overfitting* our data.
+
+### Influence
+
+Once again, we have to consider other assessment tools for our models.
+
+We will explore the **Cook's distances** that aim to measure influence; that is it measures the extent to which the regression line would change if the point is omitted. The higher the value, the most influence the point has on the fitting parameters.
+
+We will use an example from the **ggplot2** website.
+
+```{r}
+lm.cars<-lm(mpg ~ wt,data=mtcars)
+head(fortify(lm.cars))
+```
+
+We can check the residual plots
+
+```{r}
+ggplot(lm.cars) +
+  stat_qq(aes(sample = .stdresid)) +
+  geom_abline()
+```
+
+A histogram for the Cook's distance
+
+```{r}
+ggplot(lm.cars, aes(seq_along(.cooksd), .cooksd)) +
+  geom_col()
+```
+
+Let's look to an overlap between the standard deviation and the *hat* values
+
+```{r}
+ggplot(lm.cars, aes(.hat, .stdresid)) +
+  geom_point(aes(size = .cooksd)) 
+#+
+#  geom_smooth(se = FALSE, linewidth = 0.5)
+```
+
+Without a fancy graph
+
+```{r}
+plot(lm.cars,which=5)
+```
+
+Observe how the regression line changes when we remove those points
+
+```{r}
+plot(lm.cars,which=6)
+```
+
+Or if we want to make a fancy statement
+
+```{r}
+ggplot(lm.cars, aes(.hat, .cooksd)) +
+  geom_vline(xintercept = 0, colour = NA) +
+  geom_abline(slope = seq(0, 3, by = 0.5), colour = "white") +
+  geom_smooth(se = FALSE) +
+  geom_point()
+```
+
+### Visual tricks
+
+In the following chunk of code, we will try to put three plots together as one image.
+
+```{r}
+library(cowplot)
+a<-ggplot(lm.cars) +
+  stat_qq(aes(sample = .stdresid)) +
+  geom_abline()
+b<-ggplot(lm.cars, aes(.hat, .stdresid)) +
+  geom_point(aes(size = .cooksd)) 
+c<-ggplot(lm.cars, aes(.hat, .cooksd)) +
+  geom_vline(xintercept = 0, colour = NA) +
+  geom_abline(slope = seq(0, 3, by = 0.5), colour = "white") +
+  geom_smooth(se = FALSE) +
+  geom_point()
+
+plot_grid(a,b,c,align="h",axis="b")
+ggsave("three_for_price_of_one.jpeg")
+```
+
+There are other methods within *ggplot2* to draw different aspects of the same data and one of them is called **faceting**.
+
+### Standard errors and confidence intervals
+
+Recall that we have the estimates of our linear trend as
+
+$$ \hat{y}= a+ b x$$ We can create the 95% point-wise confidence bounds for points on the fitted line.
+
+```{r}
+p<-ggplot(h.data,aes(x=studyweek,y=gpa))+geom_smooth(method=lm, se=T, level=0.95)+geom_point()
+p
+```
+
+### Suggestions for data transformations
+
+- Logarithmic. This is often the right transformation for size measurements of biological organisms. If the ratio of the largest to smallest data value is greater than 100, then logarithmic transformation should be tried.
+
+- Square root or cube root. The square root is useful for data for counts of *rare events*.
+
+- General power transformation (Box-Cox transformation) $$ y(\lambda)= \frac{y^\lambda -1}{\lambda} \text{ if }\lambda \ne 0$$
+
+  - If the small values of a variable need to be spread, make $\lambda$ smaller.
+  - If the large values of a variable need to be spread, make $\lambda$ larger.
+
+- Allometric growth. This is a good measurement of whole body vs parts of the body.
+
+  $$y=ax^b$$
+
+## Reference
