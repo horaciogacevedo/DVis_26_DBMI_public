@@ -1,0 +1,211 @@
+---
+title: "Logistic Regression"
+author: "Horacio Gomez-Acevedo"
+format: html
+bibliography: mainref.bib
+editor: visual
+---
+
+## Setup
+
+As before we will use materials from @maindonald in this case excerpts from Chapter 6. I'm incorporating some excerpts from @jamesbook.
+
+Consider that we have an experiment with covariate(s) $X$ and response $Y$ with either two possibilities *yes* or *no*. For convenience, we use the binary codes for the response variable, say 1 for yes and 0 for no. We use **logistic regression** to model the probability that $Y$ is 1 or 0.
+
+We use the following notation to denote the probability of having a *yes* given that the value of $X=x$.
+
+$$      
+p(X=x)= Pr(Y=1 | X=x)
+$$
+
+Thus, if $p(X=x)>0.5$ we can say that $X=x$ belongs to the class 1. Our first attempt may be to use linear regression as follows:
+
+$$
+    p(X)= \theta_0+ \theta_1 X
+$$
+
+However, when we use such a model we may encounter negative probabilities as the following book-example shows.
+
+![](Figures/fig_logreg.png)
+
+We apply the so-called **logistic function**
+
+$$      p(X)= \frac{\exp(\theta_0+ \theta_1 X)}{1+ \exp(\theta_0+\theta_1 X)} $$\
+
+```{r,echo=TRUE}
+library(sigmoid)
+library(ggplot2)
+input = seq(-10,10,by=.05)
+df = data.frame(input,logistic(input))
+q<-ggplot(df,aes(input,logistic(input)))+geom_line()
+q
+```
+
+After some algebraic manipulation, we can show that
+
+$$
+\log \left( \frac{p(X)}{1-p(X)} \right) = \theta_0 + \theta_1 X
+$$
+
+The left-hand of the previous expression is called the **log-odds** or **logit**.
+
+> There is an *ad hoc* use of the logistic regression for prediction. For instance for a cut-off value of $0.5$ in the logistic regression model we use $\hat{p}(X)$ as follows
+
+$$
+    \hat{Y}=
+    \begin{cases}
+        0 & \textrm{if } \hat{p}(X)  \le 0.5 \\
+        1 &  \textrm{if } \hat{p}(X) > 0.5
+    \end{cases}
+$$
+
+> However, this use is problematic at best. Since we will need some scientific justification of the choice of the cut-off.
+
+Whereas we can use our data to estimate the coefficients $\theta_0$ and $\theta_1$ using a least squares approach, this is not normally used. Instead the method of **maximum likelihood** is preferred.
+
+The likelihood is the joint probability of the observed data values, given the model parameters. The so-called **deviance** is minus twice the logarithm of the likelihood. Thus, maximizing the likelihood is equivalent to minimizing the deviance.
+
+The likelihood function is defined by
+
+$$      
+\ell (\theta_0,\theta_1)= \prod_{i:y_i=0} p(x_i) \prod_{i':y_i'=1} (1-p(x_{i'}))
+$$
+
+Some calculus is required to find out the estimates $\hat{\theta}_0$ and $\hat{\theta}_1$ that **maximize** this likelihood function.
+
+> The role of minimizing the deviance plays a very similar role to minimizing sum of squares in regression.
+
+```{r}
+library(ISLR)
+attach(Default)
+
+default.logit<-glm(default ~ balance, family=binomial(link = "logit"))
+anova(default.logit)
+
+```
+
+Then, we can find some more useful information using the *summary* function
+
+```{r}
+summary(default.logit)
+```
+
+As with multiple linear regression, we can expand the model to accommodate more predictors $$      
+\log \left( \frac{p(X)}{1-p(X)} \right) = \theta_0 + \theta_1 X_1 + \cdots+ \theta_p X_p,
+$$
+
+where $X=(X_1,\ldots,X_p)$ are $p$ predictors. And the corresponding logistic function is given by
+
+$$      p(X)= \frac{\exp(\theta_0 + \theta_1 X_1 + \cdots+ \theta_p X_p)}{1 +exp(\theta_0 + \theta_1 X_1 + \cdots+ \theta_p X_p) }
+    $$
+
+### Example of EDA and analysis of multivariate logistic model
+
+A book example (from @maindonald) about Southern Corroboree frog. The variables are
+
+- pres.abs whether the frogs were found
+
+- easting reference point
+
+- northing reference point
+
+- altitude
+
+- distance to neareast extant population
+
+- NoOfPools number of potential breeding pools
+
+- NoOfSites number of potential breeding sites
+
+- avran mean rainfall for Spring period
+
+- meanmin mean minimum Spring temperature
+
+```{r}
+library(DAAG)
+attach(frogs)
+```
+
+A quick look at the distribution of those variables
+
+```{r}
+pairs(frogs[,4:10],oma=c(2,2,2,2),cex=0.5)
+```
+
+This example is interesting because we can play with different transformations on this data set
+
+- We have some skewed variables (e.g., distance, NoOfPools, NoOfSites) for which a logarithmic transformation may be useful
+
+- Two of these variables are counts, those a square-root transformation may be also useful.
+
+Let's consider in practice how can we perform these changes when exploring our models
+
+```{r}
+# a handy function to plot changes in our variables
+par(mfrow=c(2,3))
+for(nam in c("distance", "NoOfPools")){
+  y<-frogs[,nam]
+  plot(density(y), main="",xlab=nam)
+  plot(density(log(y)),main="",xlab=paste0("log ",nam))
+  plot(density(sqrt(y)),main="",xlab=paste0("sqrt ",nam))
+}
+```
+
+#### A simplified model
+
+Let's consider this model
+
+```{r}
+frogs.glm0 <- glm(pres.abs ~ altitude + log(distance)+
+                  log(NoOfPools)+NoOfSites+avrain+meanmin+
+                  meanmax,family=binomial, data=frogs)
+summary(frogs.glm0)
+```
+
+In the text, there is an explanation of why we should take the $p$-values cautiously based on the nature of the experiment. A simplified model proposed was
+
+```{r}
+frogs.glm <- glm(formula = pres.abs ~ log(distance)+
+                   log(NoOfPools)+ meanmin+ meanmax,
+                 family=binomial,data=frogs)
+summary(frogs.glm)
+```
+
+Note that the deviance was not changed and the variable *meanmax* is now with a small $p$-value.
+
+#### Some exploratory analysis
+
+To see how each of these variables changes when the other variables are held at their mean values.
+
+```{r}
+par(mfrow=c(1,4),pty="s")
+termplot(frogs.glm,data=frogs)
+par(mfrow=c(1,1))
+```
+
+> Displaying the residuals does not add insights into the model. In general, they are very hard to interpret.
+
+```         
+```
+
+```{r}
+par(mfrow=c(1,4))
+plot(frogs.glm,panel=panel.smooth)
+```
+
+```{r}
+par(mfrow=c(1,4))
+termplot(frogs.glm,data=frogs,partial.resid=TRUE)
+```
+
+An alternative to check predictive accuracy is to use cross-validation. The accuracy of the model is stored in the element *acc.cv* of the function CVbinary.
+
+```{r}
+for (j in 1:4){
+  randsam<-sample(1:10,212,replace=TRUE)
+  all.acc <-CVbinary(frogs.glm0,rand=randsam)$acc.cv
+  reduced.acc<-CVbinary(frogs.glm,rand=randsam)$acc.cv
+  cat("\nAll variables",round(all.acc,3)," Reduced model",round(reduced.acc,3),"\n=====\n")
+}
+
+```

@@ -1,0 +1,221 @@
+---
+title: "Plotly Basics"
+author: "Horacio Gomez-Acevedo"
+format: html
+editor: visual
+---
+
+## Plotly
+
+This lecture will be based on the information that is available on the *plotly* website <https://plotly.com/r/getting-started/>
+
+### Installation
+
+First, we need to install plotly
+
+```{r}
+#install.packages("plotly")
+```
+
+The very basic plot
+
+```{r}
+library(plotly)
+fig <- plot_ly(midwest, x = ~percollege, color = ~state, type = "box")
+fig
+```
+
+We can check what type of data is required to get this graph
+
+```{r}
+head(midwest)
+```
+
+### Graphical components
+
+Unlike *ggplot* and its grammar of graphs approach, *plotly* has a core figure data structure referred to as **charts**. They are automatically-generated from the *machine-readable Plotly.js schema reference*. This means, that the whole structure of a graph is set as a *json* file that is highly adaptable and only specific attributes differentiate one graph from another.
+
+### Plotly attributes
+
+Every chart needs to specify the parts that are needed to produce the desired output. The graph description has two categories
+
+1.  Traces. It describes a single series of data in a graph
+2.  Layout. It applies to the rest of the charts characteristics as *annotations*, *tittle*, etc.
+
+```{r}
+   p <- plot_ly(economics,
+                 type = "scatter",        # all "scatter" attributes: https://plotly.com/r/reference/#scatter
+                 x = ~date,               # more about scatter's "x": /r/reference/#scatter-x
+                 y = ~uempmed,            # more about scatter's "y": /r/reference/#scatter-y
+                 name = "unemployment",   # more about scatter's "name": /r/reference/#scatter-name
+                 marker = list(           # marker is a named list, valid keys: /r/reference/#scatter-marker
+                   color="#264E86"        # more about marker's "color" attribute: /r/reference/#scatter-marker-color
+                 )) %>%
+
+      add_trace(x = ~date,                                         # scatter's "x": /r/reference/#scatter-x
+                y = ~fitted((loess(uempmed ~ as.numeric(date)))),  # scatter's "y": /r/reference/#scatter-y
+                mode = 'lines',                                    # scatter's "y": /r/reference/#scatter-mode
+                line = list(                                       # line is a named list, valid keys: /r/reference/#scatter-line
+                  color = "#5E88FC",                               # line's "color": /r/reference/#scatter-line-color
+                  dash = "dashed"                                  # line's "dash" property: /r/reference/#scatter-line-dash
+                )
+      ) %>%
+
+      layout(                        # all of layout's properties: /r/reference/#layout
+             title = "Unemployment", # layout's title: /r/reference/#layout-title
+             xaxis = list(           # layout's xaxis is a named list. List of valid keys: /r/reference/#layout-xaxis
+                title = "Time",      # xaxis's title: /r/reference/#layout-xaxis-title
+                showgrid = F),       # xaxis's showgrid: /r/reference/#layout-xaxis-showgrid
+             yaxis = list(           # layout's yaxis is a named list. List of valid keys: /r/reference/#layout-yaxis
+                title = "uidx")     # yaxis's title: /r/reference/#layout-yaxis-title
+      )
+   
+```
+
+Then, we can call the graphical object
+
+```{r}
+p
+```
+
+The whole construction is more intimidating, as there are many more attributes to tweak.
+
+## EDA
+
+We will conduct some basic EDA in plotly. First, we load our data set
+
+```{r}
+library(DAAG)
+fossum <-subset(possum,sex=="f")
+attach(fossum)
+```
+
+Next, plotly will take care of this
+
+```{r}
+pl.fig<-plot_ly(x= ~ totlngth, type="histogram")
+pl.fig
+```
+
+```{r}
+pl.fig1<-plot_ly(x= ~ totlngth, type="histogram",nbinsx=50)
+pl.fig1
+```
+
+We can also change more on the histogram
+
+```{r}
+pl.fig2<-plot_ly(x= ~ totlngth, type="histogram",histnorm="probability density")
+pl.fig2
+```
+
+We can get a better result with the combination of *plotly* and *ggplot2*
+
+```{r}
+library(ggplot2)
+gg<-ggplot(fossum, aes(totlngth, color="density"))+
+  geom_histogram(aes(y=after_stat(density)),bins=30,fill="#67B7D1",alpha=0.5)+
+  geom_density(color="#67B7D1")+
+  geom_rug(color="#67B7D1")+
+  ylab("")+
+  xlab("")+
+  theme(legend.title=element_blank())+
+  scale_color_manual(values=c("density"="#67B7D1"))
+
+ggplotly(gg) %>%  
+ layout(plot_bgcolor='#e5ecf6',   
+             xaxis = list(   
+               title='Tooth Length', 
+               zerolinecolor = '#ffff',   
+               zerolinewidth = 2,   
+               gridcolor = 'ffff'),   
+             yaxis = list(   
+               title='Density', 
+               zerolinecolor = '#ffff',   
+               zerolinewidth = 2,   
+               gridcolor = 'ffff')) 
+
+```
+
+We will extend this plot to accommodate different levels given by the variable *Pop* as we did before
+
+```{r}
+plp1<-ggplot(fossum, aes(totlngth,fill=Pop))+
+  geom_histogram(bindwidth=2.5)+
+  geom_rug(sides="t",length = unit(0.3,"cm"))
+fig<- ggplotly(plp1)
+fig
+```
+
+Or even more sophisticated
+
+```{r}
+plp2<-ggplot(data=fossum)+
+  geom_histogram(aes(x=totlngth,y=after_stat(density),fill=Pop),bins=30,alpha=0.7)+
+  geom_density(aes(x=totlngth,color=Pop))+
+  labs(title = "Female Opposum Data", subtitle = "Fist Investigation") +xlab("Total Length (cm)") + ylab("Frequency")+labs(caption = "BMIG 5211 experiment")
+  
+ggplotly(plp2)%>% 
+  layout(plot_bgcolor='#e5ecf6',   
+             xaxis = list(   
+               title='Total Length (cm)', 
+               zerolinecolor = '#ffff',   
+               zerolinewidth = 2,   
+               gridcolor = 'ffff'),   
+             yaxis = list(   
+               title="Frequency", 
+               zerolinecolor = '#ffff',   
+               zerolinewidth = 2,   
+               gridcolor = 'ffff')) 
+
+```
+
+For more information <https://plotly.com/r/distplot/>
+
+## Boxplots
+
+Once again, we will use a basic example and expand upon it.
+
+```{r}
+fig <- plot_ly(y = ~totlngth, type = "box",name="Tooth length")
+fig
+```
+
+Or if we want to use the level *pop* to differentiate
+
+```{r}
+fossum.vic<-fossum[fossum$Pop=="Vic",]
+fossum.nvic<-fossum[fossum$Pop != "Vic",]
+y1<-fossum.vic$footlgth
+y2<-fossum.nvic$footlgth
+fig <-plot_ly(y=y1, type="box",name="Victoria")
+fig <-fig %>% add_trace(y=y2,name="Elsewhere")
+fig
+```
+
+And if we want it horizontal
+
+```{r}
+fig <-plot_ly(x=y1, type="box",name="Victoria")
+fig <-fig %>% add_trace(x=y2,name="Elsewhere")
+fig
+```
+
+## Patterns in bivariate data
+
+In this part we will use the electrical resistance example.
+
+```{r}
+p<-ggplot(fruitohms, aes(juice,ohms))+geom_point()+
+  stat_smooth(method="lm", col="blue")
+ggplotly(p)
+```
+
+Or we can use loess the same way we did
+
+```{r}
+p1<-ggplot(fruitohms, aes(juice,ohms))+geom_point()+
+  stat_smooth(method =NULL , col="blue")
+p2<-ggplotly(p1)
+p2
+```
