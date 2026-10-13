@@ -15,7 +15,7 @@ There are different flavors for conda
 
 What is important to note is the size of the environment itself
 
-![anaconda2](../../Figures/fig_anaconda2.png)
+![anaconda2](../Figures/fig_anaconda2.png)
 
 There is no need to downloaded locally since we will be using the available version in ACES.
 
@@ -23,7 +23,7 @@ There is no need to downloaded locally since we will be using the available vers
 
 In general, a High Performance Computing cluster has the following infrastructure
 
-![hpc](../../Figures/HPCCluster.jpeg)
+![hpc](../Figures/HPCCluster.jpeg)
 
 **Figure 1.** [Typical HPC cluster](https://www.hpc.iastate.edu/guides-old/introduction-to-hpc-clusters/what-is-an-hpc-cluster).
 
@@ -37,7 +37,7 @@ Most HPC clusters have a *gentle* way to get into the *login node* and it is thr
 At this point we will need to use our [ACCESS](https://access-ci.org/) login
 and go directly to the resources of ACES [portal](https://portal-aces.hprc.tamu.edu/)
 
-![ood](../../Figures/fig_portalACES.png)
+![ood](../Figures/fig_portalACES.png)
 
 We will be using two sessions
 
@@ -55,11 +55,11 @@ Yet, the interactive session can be totally functional provided that we supply i
 
 Let's create our VNC desktop session (with the default values)and make a request for such computing resources
 
-![VNC launch](../../Figures/fig_vnc_desktop.png)
+![VNC launch](../Figures/fig_vnc_desktop.png)
 
 Once the resource has been allocated, we can actually access it
 
-![VNC deploy](../../Figures/fig_vnc_desktop_launch.png)
+![VNC deploy](../Figures/fig_vnc_desktop_launch.png)
 
 Once you are inside your VNC you can open a terminal to get *inside* your compute resource.
 
@@ -69,7 +69,7 @@ We can check that there is no python isntalled when we type on the terminal
 python --version
 ```
 
-![Nopython](../../Figures/fig_vnc_nopython.png)
+![Nopython](../Figures/fig_vnc_nopython.png)
 
 Thus, we need to provide our interactive session with the right software. 
 
@@ -85,11 +85,11 @@ The environment needs to be created on the login node.
 
 We move back to the portal and select 
 
-![shell access](../../Figures/fig_access_shell.png)
+![shell access](../Figures/fig_access_shell.png)
 
 > You don't need to cancel the VCN session, that is still running in the background
 
-![shell login](../../Figures/fig_aces_login.png)
+![shell login](../Figures/fig_aces_login.png)
 
 We will write some commands here with a short explanation
 
