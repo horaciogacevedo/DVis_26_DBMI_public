@@ -122,7 +122,7 @@ You will notice that in your prompt at the left, it appears (hgenv). That means 
 Now the installation of the libraries is particularly simple. The advantage is that it will install all the dependencies associated with the given library.
 
 ```bash
-conda install numpy, matplotlib
+conda install numpy matplotlib
 ```
 
 If we are done with installing, then we can deactivate the environment. 
@@ -144,10 +144,10 @@ module load Miniconda3
 source activate hgenv
 ```
 
-![aces env](../../Figures/fig_aces_running_env.png)
+![aces env](../Figures/fig_aces_running_env.png)
 
 From here we can run python and we notice that *numpy* is already available!
 
-![aces numpy](../../Figures/fig_aces_numpy.png)
+![aces numpy](../Figures/fig_aces_numpy.png)
 
 > Note that we don't need to create an environment every time, it will remain available for future use!
