@@ -1,5 +1,5 @@
 # ACES interactive session
-## BMIG 50303
+## BMIG 
 ## Horacio Gomez-Acevedo, PhD.
 
 
@@ -11,7 +11,7 @@ resource for the class.
 It is a package manager that allows you to use different versions of python contained in a so-called *environment*.
 There are different flavors for conda
 
-![anaconda](../../Figures/fig_anaconda.png)
+![anaconda](../Figures/fig_anaconda.png)
 
 What is important to note is the size of the environment itself
 
