@@ -2,7 +2,7 @@
 title: "Logistic Regression"
 author: "Horacio Gomez-Acevedo"
 format: html
-bibliography: mainref.bib
+bibliography: ../mainref.bib
 editor: visual
 ---
 
@@ -26,7 +26,7 @@ $$
 
 However, when we use such a model we may encounter negative probabilities as the following book-example shows.
 
-![](Figures/fig_logreg.png)
+![](../Figures/fig_logreg.png)
 
 We apply the so-called **logistic function**
 
