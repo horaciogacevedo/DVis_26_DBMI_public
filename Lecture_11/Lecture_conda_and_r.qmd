@@ -237,4 +237,4 @@ orca(fig,file="plotly_graph2_mac.svg")
 
 If you run the previous chunk of code you will get a warning about orca.
 
-![](Figures/fig_orca_warning_mac.png)
+![](../Figures/fig_orca_warning_mac.png)
