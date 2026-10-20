@@ -1,0 +1,240 @@
+---
+title: "Conda and R"
+author: "Horacio Gomez-Acevedo"
+format: html
+editor: visual
+---
+
+## Goal
+
+As we are generating better graphics, we need to pay attention at their quality. For instance, one plot including in this lecture is this
+
+![](Figures/fig_basic_plotly_output.png)
+
+and the PNG file that was generated shows this
+
+![](Figures/fig_basic_plotly_plot_details.png){width="509"}
+
+In general, low values of DPI (say 72) are extremely low resolution and there is no option to change in *plotly* to make the resolution better (at least in a simple way).
+
+Our goal is to save those in SVG format. SVG stands for Scalable Vector Graphics. The big advantage of these files is that the information is stored as vectors, as such when you resize your figure you don't loose resolution!
+
+**Plotly** is very nice, but it did not make it easy to save those images as SVG. We will use a set of tricks to get that figure as SVG, but we need to install quite a bit of software.
+
+## Conda
+
+This is a package manager developed for python but has extended to R. I recommend the installation of anaconda <https://www.anaconda.com/download>
+
+Also, I discourage the use of *Anaconda Navigator* that is not really helpful since everything that you need can be done from the *Anaconda Prompt* or *Anaconda Powershell Prompt*.
+
+![](Figures/powershell_anaconda.png)
+
+The word *base* on the left means that you have the environment *base* activated.
+
+We will create one environment for this class named *envdatav* which will have python version 3.10 installed.
+
+```{r}
+# conda create -n envdatav python=3.10
+```
+
+You will be prompted to answer this question
+
+![](Figures/fig_environment_first.png)
+
+Your answer should be Y or y.
+
+Then, we type the following command to be sure that our environment is there
+
+```{r}
+#conda env list
+```
+
+The one highlighted shows our environment is present
+
+![](Figures/fig_enactivated.png)
+
+Finally we activate our environment
+
+```{r}
+# conda activate envdatav
+```
+
+> Note that you should see the *(envdatav)* on the left of your prompt, which means that your environment is activated.
+
+We need a couple of installations from conda
+
+```{r}
+#conda install plotly
+#conda install r-reticulate
+#conda install -c conda-forge python-kaleido
+```
+
+## Changes in Rstudio
+
+We need to make Rstudio aware of our conda environment. Select from Tools\>Project Options
+
+Follow these steps
+
+1.  Select Python
+
+![](Figures/fig_rstudiopython1.png)
+
+Click on *Select* on the next window
+
+![](Figures/fig_rstudiopython2.png)
+
+**Do not use the System Options**! (they may not be present in your system)
+
+Click on the Conda Environments.
+
+In windows you see something like this
+
+![](Figures/fig_rstudiopython3.png)
+
+Select our newly created environment (Your list should be shorter than mine)
+
+![](Figures/fig_rstudiopython4.png)
+
+Something similar in a mac
+
+![](Figures/fig_rstudiopython3_mac.png)
+
+Click Ok
+
+![](Figures/fig_rstudiopython5.png)
+
+Rstudio needs to reboot to recognize your environment
+
+![](Figures/fig_rstudiopython6.png)
+
+## Using Windows
+
+### Plotly
+
+First, we load our normal libraries
+
+```{r}
+suppressPackageStartupMessages(library(plotly))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(pals))
+```
+
+Here is the code that we had developed before for plotly
+
+```{r}
+set.seed(2024)
+nsamples<-20
+mypath<-paste("pathway ",1:nsamples)
+myenrich<-runif(nsamples,min=1.07,max=1.185)
+myngenes<-runif(nsamples,min=10,max=110)
+myqvalue<-runif(nsamples,min=0.1,max=2)
+mydata<-as.data.frame(cbind(myenrich,myngenes,myqvalue))
+colnames(mydata)<-c("Enrichment","Genes","Qvalue")
+mydata <-as.data.frame(lapply(mydata[,], as.numeric))
+mydata$"Pathway"<-mypath
+sapply(mydata,class)
+```
+
+We invoke plotly
+
+```{r}
+fig<-plot_ly(data=mydata,x= ~Enrichment, y= ~ Pathway
+,type='scatter',mode='markers',color=~ Qvalue,colors=coolwarm(),
+             size= ~ Genes,
+             sizes=c(10,30),
+             marker=list(opacity=0.75,sizemode='diameter'))
+fig <- fig%>% layout(title="Gene Enrichment Plot",
+                     xaxis=list(tickmode='array',tickvals=seq(1.075,1.18,0.025)),
+                     yaxis=list(showgrid=TRUE))
+fig
+```
+
+## Kaleido
+
+This is a specific library for generating static images (<https://github.com/plotly/Kaleido>). It is also maintained by **plotly**.
+
+![](Figures/fig_kaleido_github.png)
+
+## Kaleido for windows
+
+We have already installed all the python components of kaleido in our environment.
+
+Also, Rstudio is aware of our environment.
+
+```{r,eval=FALSE}
+scope<-kaleido()
+scope$transform(fig,"plotly_graph_kaleido_windows.svg")
+rm(scope);gc
+```
+
+## Kaleido for Mac
+
+In this case, I need to install manually *reticulate* in my Rstudio console
+
+```{r,eval=FALSE}
+#install.packages("reticulate")
+```
+
+This is a bit annoying since the conda version of R has already installed reticulate, that is not visible by my local version of R.
+
+```{r,eval=FALSE}
+scope<-kaleido()
+scope$transform(fig,"plotly_graph2_kaleido_mac.svg")
+rm(scope);gc
+```
+
+## Final Note
+
+Even tough we have setup python properly, there is still the problem with *multiple* R versions. This document for instance was written within Rstudio with R version 4.4.1. However, in our installation of reticulate (<https://rstudio.github.io/reticulate/>) with conda, it automatically downloaded and installed local versions of R, which may or may not coincide with the version that we are using.
+
+There is not much we can do about these inconsistencies, but at least, we can get one way or another our graphs as SVG files.
+
+### Orca
+
+This is software developed and maintained by **plotly** (<https://github.com/plotly/orca#installation>)
+
+![](Figures/fig_orca_github.png)
+
+It is a standalone type of software that can be used to produced static figures. Unfortunately, it is no longer maintained (last release was in March 2020) and deprecated as of August 2026.
+
+### Orca for windows
+
+You should install the standalone binaries for windows. The installation is not very straightforward as it requires that you change the path of your windows system.
+
+If your installation was successful, in your anaconda powershell you should see this
+
+![](Figures/fig_orca_windows.png)
+
+Another package that is needed is *processx*
+
+```{r,eval=FALSE}
+install.packages("processx")
+```
+
+Now, we are ready to export our graph
+
+```{r,eval=FALSE}
+orca(fig,"plotly_graph2_windows.svg")
+```
+
+In windows, there are no error messages but still the warning message that 'orca' is deprecated is present.
+
+Despite all the errors above, the program will still run and produce the output.
+
+I have added a file called *template_plotly_orca.R* that you can use when running R within a conda environment as this
+
+```{r,eval=FALSE}
+#Rscript template_plotly_orca.R 
+```
+
+### Orca for Mac
+
+In this case, the environment has already installed orca.
+
+```{r,eval=FALSE}
+orca(fig,file="plotly_graph2_mac.svg")
+```
+
+If you run the previous chunk of code you will get a warning about orca.
+
+![](Figures/fig_orca_warning_mac.png)
