@@ -64,9 +64,8 @@ Finally we activate our environment
 We need a couple of installations from conda
 
 ```{r}
-#conda install plotly
-#conda install r-reticulate
-#conda install -c conda-forge python-kaleido
+#conda install plotly r-reticulate -y
+#conda install -c conda-forge python-kaleido=0.2.1
 ```
 
 ## Changes in Rstudio
@@ -195,7 +194,7 @@ This is software developed and maintained by **plotly** (<https://github.com/plo
 
 ![](../Figures/fig_orca_github.png)
 
-It is a standalone type of software that can be used to produced static figures. Unfortunately, it is no longer maintained (last release was in March 2020) and deprecated as of August 2026.
+It is a standalone type of software that can be used to produced static figures. Unfortunately, it is no longer maintained (last release was in March 2020) and **deprecated as of August 2026**.
 
 ### Orca for windows
 
