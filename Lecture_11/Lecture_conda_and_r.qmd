@@ -9,11 +9,11 @@ editor: visual
 
 As we are generating better graphics, we need to pay attention at their quality. For instance, one plot including in this lecture is this
 
-![](Figures/fig_basic_plotly_output.png)
+![](../Figures/fig_basic_plotly_output.png)
 
 and the PNG file that was generated shows this
 
-![](Figures/fig_basic_plotly_plot_details.png){width="509"}
+![](../Figures/fig_basic_plotly_plot_details.png){width="509"}
 
 In general, low values of DPI (say 72) are extremely low resolution and there is no option to change in *plotly* to make the resolution better (at least in a simple way).
 
@@ -27,7 +27,7 @@ This is a package manager developed for python but has extended to R. I recommen
 
 Also, I discourage the use of *Anaconda Navigator* that is not really helpful since everything that you need can be done from the *Anaconda Prompt* or *Anaconda Powershell Prompt*.
 
-![](Figures/powershell_anaconda.png)
+![](../Figures/powershell_anaconda.png)
 
 The word *base* on the left means that you have the environment *base* activated.
 
@@ -39,7 +39,7 @@ We will create one environment for this class named *envdatav* which will have p
 
 You will be prompted to answer this question
 
-![](Figures/fig_environment_first.png)
+![](../Figures/fig_environment_first.png)
 
 Your answer should be Y or y.
 
@@ -51,7 +51,7 @@ Then, we type the following command to be sure that our environment is there
 
 The one highlighted shows our environment is present
 
-![](Figures/fig_enactivated.png)
+![](../Figures/fig_enactivated.png)
 
 Finally we activate our environment
 
@@ -77,11 +77,11 @@ Follow these steps
 
 1.  Select Python
 
-![](Figures/fig_rstudiopython1.png)
+![](../Figures/fig_rstudiopython1.png)
 
 Click on *Select* on the next window
 
-![](Figures/fig_rstudiopython2.png)
+![](../Figures/fig_rstudiopython2.png)
 
 **Do not use the System Options**! (they may not be present in your system)
 
@@ -89,23 +89,23 @@ Click on the Conda Environments.
 
 In windows you see something like this
 
-![](Figures/fig_rstudiopython3.png)
+![](../Figures/fig_rstudiopython3.png)
 
 Select our newly created environment (Your list should be shorter than mine)
 
-![](Figures/fig_rstudiopython4.png)
+![](../Figures/fig_rstudiopython4.png)
 
 Something similar in a mac
 
-![](Figures/fig_rstudiopython3_mac.png)
+![](../Figures/fig_rstudiopython3_mac.png)
 
 Click Ok
 
-![](Figures/fig_rstudiopython5.png)
+![](../Figures/fig_rstudiopython5.png)
 
 Rstudio needs to reboot to recognize your environment
 
-![](Figures/fig_rstudiopython6.png)
+![](../Figures/fig_rstudiopython6.png)
 
 ## Using Windows
 
@@ -153,7 +153,7 @@ fig
 
 This is a specific library for generating static images (<https://github.com/plotly/Kaleido>). It is also maintained by **plotly**.
 
-![](Figures/fig_kaleido_github.png)
+![](../Figures/fig_kaleido_github.png)
 
 ## Kaleido for windows
 
@@ -193,7 +193,7 @@ There is not much we can do about these inconsistencies, but at least, we can ge
 
 This is software developed and maintained by **plotly** (<https://github.com/plotly/orca#installation>)
 
-![](Figures/fig_orca_github.png)
+![](../Figures/fig_orca_github.png)
 
 It is a standalone type of software that can be used to produced static figures. Unfortunately, it is no longer maintained (last release was in March 2020) and deprecated as of August 2026.
 
@@ -203,7 +203,7 @@ You should install the standalone binaries for windows. The installation is not 
 
 If your installation was successful, in your anaconda powershell you should see this
 
-![](Figures/fig_orca_windows.png)
+![](../Figures/fig_orca_windows.png)
 
 Another package that is needed is *processx*
 
