@@ -1,0 +1,115 @@
+---
+title: "Making professional graphs"
+subtitle: "BMIG 52103"
+author: "Horacio Gomez-Acevedo"
+format: html
+editor: visual
+---
+
+## Goal
+
+We have seen how to make graphs in html-type of output with *quarto*. The outcome looks very nice and adjustments on line work well when using a browser. The goal for today is to make the graphs looking professional when we need to include those graphs in documents (e.g., microsoft word) or even when we want to present those results (e.g., powerpoint).
+
+### Printing output from ggplot2
+
+We will use one of our previous diagrams to navigate through this. First, we load the basic libraries and data.
+
+```{r}
+suppressPackageStartupMessages(library(DAAG))
+suppressPackageStartupMessages(library(ggplot2))
+fossum <-subset(possum,sex=="f")
+attach(fossum)
+```
+
+This is the graph that we want to
+
+```{r}
+p2<-ggplot(fossum,aes(totlngth,fill=Pop))
+q<- p2+geom_density(alpha=0.1)
+q2<-q+labs(title = "Female Opposum Data", subtitle = "Fist Investigation") +xlab("Total Length (cm)") + ylab("Frequency")+labs(caption = "BMIG 52103 experiment")
+```
+
+The visual plot can be called:
+
+-   Windows
+
+```{r}
+q2
+```
+
+-   Linux
+
+If you are using a linux system (e.g., ubuntu) you will have a warning about semi-transparency. At that point on the console type:
+
+```{r,eval=FALSE}
+#options(bitmapType = "cairo")
+```
+
+Then,
+
+```{r}
+q2
+```
+
+If you want to save your file as *scalable vector graphics* (svg), you will need to install *svglite*
+
+```{r,eval=FALSE}
+install.packages("svglite")
+```
+
+Then, you can save it using the *ggsave* command as follows
+
+```{r}
+library(svglite)
+ggsave("ggplot_graph1.svg",plot=q2,device = "svg",dpi="print")
+```
+
+The option *print* on dpi will set the resolution to 300 dpi. You can also save it right away as *png* with the same resolution, but I won't suggest doing that if you need to add final touches to your graph.
+
+```{r}
+ggsave("ggplot_graph1.png",plot=q2,device = "png",dpi="print")
+
+```
+
+### Plotly
+
+As we pointed out, for plotly there are some ways to convert our graphs into SVGs. Namely, we have used **Orca** and **Kaleido**.
+
+## Inkscape
+
+We will use inkscape to make our graphs right. I'm assuming we have some of our graphs in *svg* format already.
+
+You can download inkscape from here <https://inkscape.org/release/inkscape-1.3.2/>
+
+If you want to take this to the next level, I would recommend the Udemy course by Dr. Aidan Wimshurst on Inkscape for Scientists and Engineers <https://www.udemy.com/course/inkscape-for-scientists-and-engineers/>
+
+### Microsoft Word 
+
+You can expand this ideas to Libre office.
+
+There is a simple file that I called *dummy_text.txt* with randomly generated text from <https://www.randomtextgenerator.com/>
+
+The first thing that you need to know is how big your figure is going to be and check the margins and the real size of your document.
+
+This is done by clicking on **Layout\>Margins**. In this case, the margin sizes are 0.5in. Thus, our figure should be at most of size 8.5 -2\*0.5= 7.5 in.
+
+In Inkscape we create a new file with a canvas size of 7.5 in x 3 in. By clicking on **File\>Document Properties**
+
+#### Importing as png image
+
+Next, we will import the file that we got by default with plotly (plotly_graph1.png), and resize to fit in our canvas. I saved the file as *inkscape_fig1.svg*. Then, I'm ready to export it. **File\>Export**. The only problem that I see is that we are bound by the original resolution of our png graph. We can import our graph to Microsoft word, but the result is underwhelming.
+
+#### Importing as svg format
+
+The better alternative is to use an *svg* file. Thus, we open a new file in Inkscape and change the canvas accordingly. Then, we place the *svg* file and export but adjusting the graph resolution to 300 dpi.
+
+> Note. The newest versions of Inkscape (1.4\*) allow you to import right away in different formats not only png's.
+
+### Power point presentations
+
+Normally, we want to include our graphs in a presentation. There are few things to take care off. First, **the normal presentation has a size of 10 inches** $\times$ **7.5 inches (on-screen show (4:3) ratio)**. The trick is similar,
+
+-   We produce our SVG graph (with ggplot or plotly)
+-   We transfer the SVG file into *inkscape*
+-   We change the size and other effects in our graph
+-   We import it into power point.
