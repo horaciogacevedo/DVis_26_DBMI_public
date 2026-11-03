@@ -1,0 +1,82 @@
+---
+title: "Correlation Plots"
+author: "Horacio Gomez-Acevedo"
+format: html
+bibliography: mainref.bib
+editor: visual
+---
+
+## Correlation Plots
+
+Recall that in multivariate data analysis we can encounter a number of problems with the variables (e.g., normalizing, highly correlated).
+
+One easy way to explore visually possible highly correlated variables is to produce a correlation plot. We will use the package *corrplot* and follow this vignette <https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html>
+
+```{r, eval=FALSE}
+install.packages("corrplot")
+```
+
+Then we have the very basic correlation plot
+
+```{r}
+library(corrplot)
+
+M=cor(mtcars)
+corrplot(M,method="number")
+```
+
+The function *corrplot* accepts a correlation matrix (not a data frame).
+
+There are some basic variations on the shape of this plot. The default plot is
+
+```{r}
+corrplot(M)
+```
+
+However, to obtain also some useful information from this plot, we can reorder the variables. In this case, the order is according to the first component of the principal component analysis of the correlation matrix.
+
+```{r}
+corrplot(M,order='FPC')
+```
+
+Since the correlation matrix is symmetric, we actually only need either the upper half or the lower half. More precisely,
+
+```{r}
+corrplot(M, method = 'ellipse', order = 'FPC', type = 'upper')
+```
+
+We can also cluster our variables
+
+```{r}
+corrplot(M, order = 'hclust', addrect = 2)
+```
+
+What about changing the color scheme
+
+```{r}
+corrplot(M, method = 'square', order = 'FPC', addCoef.col = 'grey', tl.pos = 'd',
+         cl.pos = 'n', col = COL2('PuOr'))
+```
+
+We can go further and use some selection based on cutoffs.
+
+```{r}
+testRes = cor.mtest(mtcars, conf.level = 0.95)
+
+## specialized the insignificant value according to the significant level
+corrplot(M, p.mat = testRes$p, sig.level = 0.10, order = 'hclust', addrect = 2)
+```
+
+Another way to bias our view of *significance*
+
+```{r}
+## add p-values on no significant coefficients
+corrplot(M, p.mat = testRes$p, insig = 'p-value')
+```
+
+Instead of the previous plot, I recommend using this one
+
+```{r}
+## add ALL p-values 
+corrplot(M, p.mat = testRes$p, insig = 'p-value',sig.level = -1)
+```
