@@ -1,0 +1,167 @@
+---
+title: "Circos"
+author: "Horacio Gomez-Acevedo"
+format: html
+editor: visual
+---
+
+## Circos
+
+Circos is a software package for data visualization in a *circular layout* <http://circos.ca/software/download/circos/>.
+
+Originally created to visualize genomics data it is very flexible that produces bitmap images or SVG files.
+
+It requires a program called *perl* <https://www.perl.org/>, and it utilization requires some familiarity with command line.
+
+### ![](Figures/lymphatic_circos.svg)
+
+![](Figures/Cancer_v3.png)
+
+## R tools for circos
+
+There are a number of options to generate *circos*-like graphs
+
+## Rcircos
+
+This package is one of the oldest that was developed to generate this type of figues
+
+```{r,eval=FALSE}
+install.packages("RCircos")
+```
+
+One easy way to see it in action is through its demo that will generate a pdf file called *RCircos.Demo.Human.pdf*.
+
+```{r}
+library(RCircos)
+demo("RCircos.Demo.Human")
+```
+
+## interacCircos
+
+This package is relatively new, and it exploits javascript to generate interactive figures. We will install it directly from *Bioconductor*
+
+```{r}
+BiocManager::install("interacCircos")
+```
+
+```{r}
+library(interacCircos)
+Circos(zoom=FALSE)
+
+```
+
+Another example:
+
+```{r}
+Circos(zoom=FALSE,genome=list("Example1"=100,"Example2"=200,
+"Example3"=300),genomeFillColor = "Blues",chrPad = 0,genomeTicksDisplay = TRUE,
+genomeTicksScale = 10,genomeLabelDisplay = FALSE)
+```
+
+We will check a tutorial more carefully. I have placed already the file *snpExample_random_from_1000G.vcf* which contains a random sample of snps from the 1000 Genomes project.
+
+```{r}
+library(interacCircos)
+library(stringr)
+SNP_data<-read.table("Data_sets/snpExample_random_from_1000G.vcf",sep = "\t")
+SNP_data<-SNP_data[,c(1,2,8)]
+colnames(SNP_data)<-c("chr","pos","value")
+SNP_data$value<-as.integer(str_split_fixed(str_split_fixed(SNP_data$value,
+ ";", 2)[,1],"=",2)[,2])
+```
+
+we can check this data
+
+```{r}
+head(SNP_data)
+```
+
+We build the chromosome track
+
+```{r}
+Circos()
+```
+
+Adding the SNP track
+
+```{r}
+SNP_track<-CircosSnp('SNP01', minRadius =150, maxRadius = 190, data = SNP_data,fillColor= "#9ACD32",circleSize= 2)
+
+Circos(moduleList = SNP_track)
+
+```
+
+Adding some background, so the information about SNPs is not floating in vacuum
+
+```{r}
+Bg_track<-CircosBackground('BG01',minRadius = 145, maxRadius = 200)
+Circos(moduleList = SNP_track+Bg_track)
+```
+
+### Animations
+
+One distinctive characteristic of this library is to exploit Javascript abilities to make impressive animations.
+
+```{r}
+SNP_track<-CircosSnp('SNP01', minRadius =150, maxRadius = 190, 
+                     data = SNP_data,fillColor= "#9ACD32",
+                     circleSize= 2, animationDisplay=TRUE,animationTime= 2000,
+                     animationDelay= 0,animationType= "linear")
+Bg_track<-CircosBackground('BG01',minRadius = 145, maxRadius = 200)
+Circos(moduleList = SNP_track+Bg_track,
+       SNPMouseEvent = TRUE,SNPMouseOverDisplay = TRUE,
+       SNPMouseOverTooltipsSetting = "style1",
+       SNPMouseOutDisplay = TRUE,SNPMouseOutColor = NULL)
+```
+
+Even more animations
+
+```{r}
+bubbleData=bubbleExample
+Circos(moduleList=CircosBubble('Bubble01', maxRadius = 230, 
+                               minRadius = 170, data=bubbleData, 
+                               blockStroke = TRUE,bubbleMaxSize =10, bubbleMinSize = 2,
+                               maxColor = "red", minColor = "yellow", 
+                               totalLayer =3,animationDisplay = TRUE, animationType="linear"),
+       genome = list("2L"=23011544,"2R"=21146708,"3L"=24543557,
+                     "3R"=27905053,"X"=22422827,"4"=1351857), 
+       BUBBLEMouseOverDisplay =TRUE,BUBBLEMouseOverTooltipsSetting = "style1",
+       innerRadius = 236,BUBBLEMouseOutDisplay = TRUE,BUBBLEMouseOutColor = NULL)
+
+```
+
+Even more fun:
+
+```{r}
+geneData=geneExample
+Circos(moduleList=CircosGene('Gene01', outerRadius = 195, 
+                             innerRadius = 180,data=geneData,arrowGap = 10, 
+                             arrowColor ="black",arrowSize = "12px",
+                             cdsColor = "#1e77b3",cdsStrokeColor = "#1e77b3",
+                             cdsStrokeWidth= 0,utrWidth= 0,utrColor= "#fe7f0e",
+                             utrStrokeColor= "#fe7f0e",
+                             animationDisplay = TRUE),genome =list("EGFR"=1000),
+       outerRadius = 220,GENEMouseOverDisplay = TRUE,
+       GENEMouseOverTooltipsSetting = "style1",
+       GENEMouseOutDisplay = TRUE,
+       GENEMouseOutColor = NULL)
+```
+
+One last example
+
+```{r}
+lineData=lineExample
+Circos(moduleList=CircosLine('LINE01', data = lineData,maxRadius=200,
+                             minRadius=150,color= "#ff0031",
+                             animationDisplay = TRUE,animationTime = 4000,
+                             animationDelay = 100)
+       +CircosBackground('BG01',minRadius = 205,maxRadius = 150),
+       LINEMouseOverDisplay = TRUE,LINEMouseOverTooltipsSetting = "style1",
+       LINEMouseOutDisplay = TRUE,LINEMouseOutLineStrokeColor = NULL)
+```
+
+## NG-circos
+
+This is another tool to generate impressive animated circos-like graphs. It is totally written in Javascript <https://github.com/YaCui/NG-Circos/tree/master>
+
+You can see very impressive simulations on the directory *other_demos* of the repository that can be saved as SVGs. The documentation of NG-Circos is very complete <https://wlcb.oit.uci.edu/NG-Circos/static/doc.html>
