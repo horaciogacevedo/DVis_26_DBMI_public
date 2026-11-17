@@ -1,0 +1,253 @@
+---
+title: "Violin Plots"
+author: "Horacio Gomez-Acevedo"
+format: html
+bibliography: mainref.bib
+editor: visual
+---
+
+## Background
+
+Previously we have observed that using histograms for data visualization has serious problems since changes in the number of bins or the location of the center of the bins can completely reshape the figure.
+
+We also have seen that using the *density plot* was a better way to visually describe the data. Violin plots are first described in the paper of @violinplotp
+
+### What is density and what does it measure?
+
+Let's suppose that we have $n$ data points $x_1,\ldots, x_n$, and we define the *interval width* as $h>0$. Then the location density function $d$ is defined as
+
+$$
+\begin{equation}
+d(x|h)= \frac{\sum_{i=1}^n \delta_i}{nh}, \text{ where } \delta_i= 
+\begin{cases}
+1 & \text{if the ith data value is in }[x-h/2,x+h/2]
+\\
+0 & \text{otherwise} \\
+\end{cases}
+\end{equation}
+$$
+
+We can modify this expression by using a smoother version of the $\delta_i$ functions.
+
+```{r}
+library(ggplot2)
+
+p<-ggplot(diamonds, aes(carat))
+```
+
+Let's try the normal density
+
+```{r}
+p+geom_density()
+```
+
+We add different *kernels* to the description of the function.
+
+> Note that the option *adjust* plays the role of the $h$ above.
+
+```{r}
+p+geom_density(adjust=3,kernel="rectangular")
+```
+
+In the following chunk we see the default values
+
+```{r}
+p+geom_density(adjust=1,kernel="gaussian")
+
+```
+
+and *Gaussian kernel* gives us the expression for the $\delta_i$ functions
+
+$$
+\begin{equation}
+\delta_i= 
+\begin{cases}
+\exp(\frac{-(x_i-x)^2}{2}) & \text{if } x_i \in [x-h/2,x+h/2]
+\\
+0 & \text{otherwise} \\
+\end{cases}
+\end{equation}
+$$
+
+## Violin plots
+
+The violin plots draw the density vertically for each level.
+
+```{r}
+p<-ggplot(diamonds, aes(factor(cut),carat))
+p+geom_violin()
+```
+
+Compare this with
+
+```{r}
+fdiamonds<-diamonds[diamonds$cut=="Fair",]
+p2<-ggplot(fdiamonds, aes(carat))
+p2+geom_density()
+```
+
+### Nice violin plots
+
+Since we can have violin plots per level, we can color them
+
+```{r}
+p<-ggplot(diamonds, aes(factor(cut),carat))
+p+geom_violin(aes(fill=factor(cut)))
+```
+
+## Even nicer plots
+
+We will use plotly to get the same information. First, we load the library
+
+```{r}
+suppressMessages(library(plotly))
+```
+
+Next, we use the plot and we add in between the summary.
+
+```{r}
+fig <- diamonds %>%
+  plot_ly(
+    x = ~cut,
+    y = ~carat,
+    split = ~cut,
+    type = "violin",
+    box = list(
+      visible=TRUE
+    ),
+    meanline = list(
+      visible=TRUE
+    )
+  )
+
+fig <- fig %>%
+  layout(
+    xaxis = list(
+      title = "Quality Cut"
+    ),
+    yaxis = list(
+      title = "Carats",
+      zeroline = FALSE
+    )
+  )
+
+fig
+```
+
+We will do something else
+
+
+
+```{r}
+fig <- diamonds %>%
+  plot_ly(
+    x = ~cut, y = ~carat, split = ~cut, type = "violin",
+    box = list(visible = TRUE),
+    points = "all", pointpos = 0
+  ) %>%
+  layout(
+    xaxis = list(title = "Quality Cut"),
+    yaxis = list(title = "Carats", zeroline = FALSE)
+  )
+fig
+```
+
+
+Here is another plot that can be more descriptive
+
+```{r}
+
+df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/violin_data.csv")
+
+pointposMale <- c(-0.9,-1.1,-0.6,-0.3)
+pointposFemale <- c(0.45,0.55,1,0.4)
+showLegend <- c(T,F,F,F)
+df$day <- factor(df$day, levels = c("Thur", "Fri", "Sat", "Sun"))
+
+fig <- plot_ly()
+
+for (i in 1:length(unique(df$day))) {
+ fig <- add_trace(
+    fig,
+    type = 'violin',
+    x = df$day[df$sex == 'Male' & df$day == unique(df$day)[i]],
+    y = df$total_bill[df$sex == 'Male' & df$day == unique(df$day)[i]],
+    hoveron = "points+kde",
+    legendgroup = 'M',
+    scalegroup = 'M',
+    name = 'M',
+    side = 'negative',
+    box = list(
+      visible = T
+    ),
+    points = 'all',
+    pointpos = pointposMale[i],
+    jitter = 0,
+    scalemode = 'count',
+    meanline = list(
+      visible = T
+    ),
+    color = I("#8dd3c7"),
+    marker = list(
+      line = list(
+        width = 2,
+        color = "#8dd3c7"
+      ),
+      symbol = 'line-ns'
+    ),
+    showlegend = showLegend[i]
+    ) 
+  fig <- fig %>%
+     add_trace(
+       fig,
+       type = 'violin',
+       x = df$day[df$sex == 'Female' & df$day == unique(df$day)[i]],
+       y = df$total_bill[df$sex == 'Female' & df$day == unique(df$day)[i]],
+       hoveron = "points+kde",
+       legendgroup = 'F',
+       scalegroup = 'F',
+       name = 'F',
+       side = 'positive',
+       box = list(
+         visible = T
+       ),
+       points = 'all',
+       pointpos = pointposFemale[i],
+       jitter = 0,
+       scalemode = 'count',
+       meanline = list(
+         visible = T
+       ),
+       color = I("#dea0fd"),
+       marker = list(
+         line = list(
+           width = 2,
+           color = "#dea0fd"
+         ),
+         symbol = 'line-ns'
+       ),
+       showlegend = showLegend[i]
+   )
+}
+
+fig <- layout(
+  fig,
+  title = "Total bill distribution<br><i>scaled by number of bills per gender",
+  yaxis = list(
+    zeroline = F
+  ),
+  violingap = 0,
+  violingroupgap = 0,
+  violinmode = 'overlay',
+  legend = list(
+    tracegroupgap = 0
+  )
+)
+
+fig
+
+```
+
+## Use of AI
+
+Some of the chunks of code were updated by Claude and the final version revised and tested by the instructor
